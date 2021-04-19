@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Александр Кокин](https://up.htmlacademy.ru/ecmascript/14/user/1569955).
-* Наставник: `Неизвестно`.
+* Наставник: [Артем Макаров](https://htmlacademy.ru/profile/deepsick).
 
 ---
 
