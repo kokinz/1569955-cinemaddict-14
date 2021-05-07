@@ -149,10 +149,10 @@ const getRandomGenre = () => {
     'Drama',
     'Film-Noir',
     'Mystery',
-    'Action',
-    'Adventure',
+    'Cartoon',
+    'Comedy',
     'Western',
-    'Crime',
+    'Musical',
   ];
 
   const randomGenres = [];
@@ -163,7 +163,7 @@ const getRandomGenre = () => {
 
   const uniqGenres = new Set(randomGenres);
 
-  return Array.from(uniqGenres).join(', ');
+  return Array.from(uniqGenres);
 };
 
 const getRandomText = () => {
@@ -232,7 +232,7 @@ const generateFilm = () => {
     comments: getRandomComments(getRandomInteger(0, 5)),
     date: getFilmDate(1929, 1964),
     country: getRandomCountry(),
-    runtime: getRandomInteger(15, 120),
+    runTime: getRandomInteger(15, 120),
     genres: getRandomGenre(),
     isWatchlist: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
