@@ -5,6 +5,7 @@ import {createUserRankTemplate} from './view/user-rank.js';
 import {createShowMoreButtonTemplate} from './view/show-more-button.js';
 import {createFilmPopupTemplate} from './view/film-popup.js';
 import {createMoviesCounterTemplate} from './view/movies-counter.js';
+import {generateFilm} from './mock/film.js';
 
 const FILMS_CARD_COUNTER = 5;
 const EXTRA_FILMS_COUNTER = 2;
@@ -38,3 +39,5 @@ for (let i = 1; i <= extraFilmListsElements.length; i++) {
     render(extraFilmListsElements[j], createFilmCardTemplate());
   }
 }
+
+generateFilm();
