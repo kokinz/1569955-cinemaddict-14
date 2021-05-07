@@ -3,7 +3,7 @@ import {createFilmListsTemplate} from './view/film-lists.js';
 import {createFilmCardTemplate} from './view/film-card.js';
 import {createUserRankTemplate} from './view/user-rank.js';
 import {createShowMoreButtonTemplate} from './view/show-more-button.js';
-// import {createFilmPopupTemplate} from './view/film-popup.js';
+import {createFilmPopupTemplate} from './view/film-popup.js';
 import {createMoviesCounterTemplate} from './view/movies-counter.js';
 import {generateFilm} from './mock/film.js';
 
@@ -26,7 +26,7 @@ render(siteHeaderElement, createUserRankTemplate());
 render(siteMainElement, createSiteMenuTemplate(), 'afterbegin');
 render(siteMainElement, createFilmListsTemplate());
 render(footerStatistics, createMoviesCounterTemplate());
-// render(siteFooterElement, createFilmPopupTemplate(), 'afterend');
+render(siteFooterElement, createFilmPopupTemplate(films[15]), 'afterend');
 
 const filmListElement = siteMainElement.querySelector('.films-list__container');
 
@@ -37,8 +37,8 @@ render(filmListElement, createShowMoreButtonTemplate(), 'afterend');
 
 const extraFilmListsElements = siteMainElement.querySelectorAll('.films-list--extra .films-list__container');
 
-for (let i = 1; i <= extraFilmListsElements.length; i++) {
+for (let i = 0; i < extraFilmListsElements.length; i++) {
   for (let j = 0; j < EXTRA_FILMS_COUNTER; j++) {
-    render(extraFilmListsElements[j], createFilmCardTemplate(films[j]));
+    render(extraFilmListsElements[i], createFilmCardTemplate(films[j]));
   }
 }
