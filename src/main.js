@@ -3,15 +3,17 @@ import {createFilmListsTemplate} from './view/film-lists.js';
 import {createFilmCardTemplate} from './view/film-card.js';
 import {createUserRankTemplate} from './view/user-rank.js';
 import {createShowMoreButtonTemplate} from './view/show-more-button.js';
-import {createFilmPopupTemplate} from './view/film-popup.js';
+// import {createFilmPopupTemplate} from './view/film-popup.js';
 import {createMoviesCounterTemplate} from './view/movies-counter.js';
 import {generateFilm} from './mock/film.js';
+import {generateFilters} from './mock/filters.js';
 
 const FILMS_CARD_COUNTER = 5;
 const EXTRA_FILMS_COUNTER = 2;
 const FILMS_COUNT = 20;
 
 const films = new Array(FILMS_COUNT).fill().map(generateFilm);
+const filters = generateFilters(films);
 
 const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
@@ -23,10 +25,10 @@ const siteFooterElement = document.querySelector('.footer');
 const footerStatistics = siteFooterElement.querySelector('.footer__statistics');
 
 render(siteHeaderElement, createUserRankTemplate());
-render(siteMainElement, createSiteMenuTemplate(), 'afterbegin');
+render(siteMainElement, createSiteMenuTemplate(filters), 'afterbegin');
 render(siteMainElement, createFilmListsTemplate());
 render(footerStatistics, createMoviesCounterTemplate());
-render(siteFooterElement, createFilmPopupTemplate(films[15]), 'afterend');
+// render(siteFooterElement, createFilmPopupTemplate(films[15]), 'afterend');
 
 const filmListElement = siteMainElement.querySelector('.films-list__container');
 
