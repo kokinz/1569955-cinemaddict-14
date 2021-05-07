@@ -24,10 +24,10 @@ const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 const footerStatistics = siteFooterElement.querySelector('.footer__statistics');
 
-render(siteHeaderElement, createUserRankTemplate());
+render(siteHeaderElement, createUserRankTemplate(filters));
 render(siteMainElement, createSiteMenuTemplate(filters), 'afterbegin');
 render(siteMainElement, createFilmListsTemplate());
-render(footerStatistics, createMoviesCounterTemplate());
+render(footerStatistics, createMoviesCounterTemplate(films));
 // render(siteFooterElement, createFilmPopupTemplate(films[15]), 'afterend');
 
 const filmListElement = siteMainElement.querySelector('.films-list__container');
