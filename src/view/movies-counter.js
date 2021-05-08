@@ -1,6 +1,6 @@
-const createMoviesCounterTemplate = () => {
+const createMoviesCounterTemplate = (films) => {
   return `<p>
-    130 291 movies inside
+    ${films.length} movies inside
   </p>`;
 };
 
