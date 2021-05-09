@@ -19,7 +19,7 @@ const checkList = (value) => {
   return value ? true : false;
 };
 
-const renderElement = (container, element, place = 'beforeend') => {
+const render = (container, element, place = 'beforeend') => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -43,4 +43,4 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export {RenderPosition, getTimeFormat, checkList, renderElement, renderTemplate, createElement};
+export {RenderPosition, getTimeFormat, checkList, render, renderTemplate, createElement};
