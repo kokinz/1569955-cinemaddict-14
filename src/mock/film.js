@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {posters, titles, descriptions, directors, writers, actors, countries, genres, texts, emotions, autors} from './mock-data.js';
 
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -18,48 +19,14 @@ const getRandomFloat = (a = 5, b = 10, c = 1) => {
 };
 
 const getRandomPoster = () => {
-  const posters = [
-    './images/posters/made-for-each-other.png',
-    './images/posters/popeye-meets-sinbad.png',
-    './images/posters/sagebrush-trail.jpg',
-    './images/posters/santa-claus-conquers-the-martians.jpg',
-    './images/posters/the-dance-of-life.jpg',
-    './images/posters/the-great-flamarion.jpg',
-    './images/posters/the-man-with-the-golden-arm.jpg',
-  ];
-
   return posters[getRandomInteger(0, posters.length - 1)];
 };
 
 const getRandomTitle = () => {
-  const titles = [
-    'The Dance of Life',
-    'Sagebrush Trail',
-    'The Man with the Golden Arm',
-    'Santa Claus Conquers the Martians',
-    'Popeye the Sailor Meets Sindbad the Sailor',
-    'The Great Flamarion',
-    'Made for Each Other',
-  ];
-
   return titles[getRandomInteger(0, titles.length - 1)];
 };
 
 const getRandomDescription = () => {
-  const descriptions = [
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ',
-    'Cras aliquet varius magna, non porta ligula feugiat eget. ',
-    'Fusce tristique felis at fermentum pharetra. ',
-    'Aliquam id orci ut lectus varius viverra. ',
-    'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. ',
-    'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. ',
-    'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. ',
-    'Sed sed nisi sed augue convallis suscipit in sed felis. ',
-    'Aliquam erat volutpat. ',
-    'Nunc fermentum tortor ac porta dapibus. ',
-    'In rutrum ac purus sit amet tempus. ',
-  ];
-
   let randomDescriptions = '';
 
   const randomCountDescriptions = getRandomInteger(1, 5);
@@ -72,27 +39,10 @@ const getRandomDescription = () => {
 };
 
 const getRandomDirector = () => {
-  const directors = [
-    'Tom Ford',
-    'Anthony Mann',
-    'Steven Spielberg',
-    'Martin Scorsese',
-    'Alfred Hitchcock',
-  ];
-
   return directors[getRandomInteger(0, directors.length - 1)];
 };
 
 const getRandomWriters = () => {
-  const writers = [
-    'Anne Wigton',
-    'Heinz Herald',
-    'Richard Weil',
-    'Asghar Farhadi',
-    'Eric Roth',
-    'Aaron Sorkin',
-  ];
-
   const randomWriters = [];
 
   for (let i = 1; i <= getRandomInteger(1, 3); i++) {
@@ -105,16 +55,6 @@ const getRandomWriters = () => {
 };
 
 const getRandomActors = () => {
-  const actors = [
-    'Erich von Stroheim',
-    'Mary Beth Hughes',
-    'Dan Duryea',
-    'Marlon Brando',
-    'Jack Nicholson',
-    'James Stewart',
-    'Humphrey Bogart',
-  ];
-
   const randomActors = [];
 
   for (let i = 1; i <= getRandomInteger(1, 3); i++) {
@@ -133,28 +73,10 @@ const getFilmDate = (from, to) => {
 };
 
 const getRandomCountry = () => {
-  const countries = [
-    'USA',
-    'Australia',
-    'Canada',
-    'Costa Rica',
-    'France',
-  ];
-
   return countries[getRandomInteger(0, countries.length - 1)];
 };
 
 const getRandomGenre = () => {
-  const genres = [
-    'Drama',
-    'Film-Noir',
-    'Mystery',
-    'Cartoon',
-    'Comedy',
-    'Western',
-    'Musical',
-  ];
-
   const randomGenres = [];
 
   for (let i = 1; i <= getRandomInteger(1, 3); i++) {
@@ -167,35 +89,14 @@ const getRandomGenre = () => {
 };
 
 const getRandomText = () => {
-  const texts = [
-    'Interesting setting and a good cast',
-    'Booooooooooring',
-    'Very very old. Meh',
-    'Almost two hours? Seriously?',
-    'Great movie!',
-  ];
-
   return texts[getRandomInteger(0, texts.length - 1)];
 };
 
 const getRandomEmotion = () => {
-  const emotions = [
-    'angry',
-    'puke',
-    'sleeping',
-    'smile',
-  ];
-
   return emotions[getRandomInteger(0, emotions.length - 1)];
 };
 
 const getRandomAutors = () => {
-  const autors = [
-    'John Doe',
-    'Tim Macoveev',
-    'Ilya O\'Reilly',
-  ];
-
   return autors[getRandomInteger(0, autors.length - 1)];
 };
 

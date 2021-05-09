@@ -4,21 +4,13 @@ const getTimeFormat = (time) => {
 
   let duration = '';
 
-  if (hours > 0){
-    duration += hours + 'h ' + minutes + 'm';
-  } else {
-    duration += minutes + 'm';
-  }
+  hours > 0 ? duration += hours + 'h ' + minutes + 'm' : duration += minutes + 'm';
 
   return duration;
 };
 
 const checkList = (value) => {
-  if (value) {
-    return true;
-  } else {
-    return false;
-  }
+  return value ? true : false;
 };
 
 export {getTimeFormat, checkList};
