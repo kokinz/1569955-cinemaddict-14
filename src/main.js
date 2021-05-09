@@ -1,13 +1,14 @@
-import {createSiteMenuTemplate} from './view/site-menu.js';
+import SiteMenuView from './view/site-menu.js';
 import FilmListView from './view/film-lists.js';
-import {createFilmCardTemplate} from './view/film-card.js';
-import {createUserRankTemplate} from './view/user-rank.js';
+import FilmCardView from './view/film-card.js';
+import UserRankView from './view/user-rank.js';
 import ShowMoreView from './view/show-more-button.js';
-import {createFilmPopupTemplate} from './view/film-popup.js';
-import {createMoviesCounterTemplate} from './view/movies-counter.js';
+import FilmPopupView from './view/film-popup.js';
+import MoviesCounterView from './view/movies-counter.js';
+
 import {generateFilm} from './mock/film.js';
 import {generateFilters} from './mock/filters.js';
-import {renderTemplate, renderElement, RenderPosition} from './utils.js';
+import {renderElement, RenderPosition} from './utils.js';
 
 const FILMS_CARD_COUNTER = 5;
 const EXTRA_FILMS_COUNTER = 2;
@@ -21,17 +22,17 @@ const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 const footerStatistics = siteFooterElement.querySelector('.footer__statistics');
 
-renderTemplate(siteHeaderElement, createUserRankTemplate(filters));
-renderTemplate(siteMainElement, createSiteMenuTemplate(filters), 'afterbegin');
+renderElement(siteHeaderElement, new UserRankView(filters).getElement());
+renderElement(siteMainElement, new SiteMenuView(filters).getElement(), RenderPosition.AFTERBEGIN);
 renderElement(siteMainElement, new FilmListView().getElement());
-renderTemplate(footerStatistics, createMoviesCounterTemplate(films));
-renderTemplate(siteFooterElement, createFilmPopupTemplate(films[15]), 'afterend');
+renderElement(footerStatistics, new MoviesCounterView(films).getElement());
+renderElement(siteFooterElement, new FilmPopupView(films[15]).getElement(), 'afterend');
 
 const filmListElement = siteMainElement.querySelector('.films-list__container');
 const extraFilmListsElements = siteMainElement.querySelectorAll('.films-list--extra .films-list__container');
 
 for (let i = 0; i < Math.min(films.length, FILMS_CARD_COUNTER); i++) {
-  renderTemplate(filmListElement, createFilmCardTemplate(films[i]));
+  renderElement(filmListElement, new FilmCardView(films[i]).getElement());
 }
 
 if (films.length > FILMS_CARD_COUNTER) {
@@ -46,7 +47,7 @@ if (films.length > FILMS_CARD_COUNTER) {
 
     films
       .slice(renderedFilmsCount, renderedFilmsCount + FILMS_CARD_COUNTER)
-      .forEach((film) => renderTemplate(filmListElement, createFilmCardTemplate(film)));
+      .forEach((film) => renderElement(filmListElement, new FilmCardView(film).getElement()));
 
     renderedFilmsCount += FILMS_CARD_COUNTER;
 
@@ -59,6 +60,6 @@ if (films.length > FILMS_CARD_COUNTER) {
 
 for (let i = 0; i < extraFilmListsElements.length; i++) {
   for (let j = 0; j < EXTRA_FILMS_COUNTER; j++) {
-    renderTemplate(extraFilmListsElements[i], createFilmCardTemplate(films[j]));
+    renderElement(extraFilmListsElements[i], new FilmCardView(films[j]).getElement());
   }
 }

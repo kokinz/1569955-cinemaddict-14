@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 const getFiltersTemplate = (filters) => filters.map((filter) => {
   return `<a href="#${filter.name}" class="main-navigation__item">${filter.name} <span class="main-navigation__item-count">${filter.count}</span></a>`;
 }).join(' ');
@@ -18,4 +20,27 @@ const createSiteMenuTemplate = (filters) => {
   </ul>`;
 };
 
-export {createSiteMenuTemplate};
+class SiteMenu {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteMenuTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {SiteMenu as default};

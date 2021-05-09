@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getTimeFormat, checkList} from '../utils.js';
+import {getTimeFormat, checkList, createElement} from '../utils.js';
 
 const createFilmPopupTemplate = (film) => {
   const {title, alternative_title, rating, age_rating, director, writers, actors, date, runTime, country, genres, poster, description, comments, isWatchlist, isWatched, isFavorite} = film;
@@ -141,4 +141,27 @@ const createFilmPopupTemplate = (film) => {
   </section>`;
 };
 
-export {createFilmPopupTemplate};
+class FilmPopup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {FilmPopup as default};

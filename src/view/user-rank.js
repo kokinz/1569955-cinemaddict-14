@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 const getRank = (filters) => {
   const history = filters.find((filter) => filter.name === 'History');
 
@@ -20,4 +22,27 @@ const createUserRankTemplate = (filters) => {
   </section>`;
 };
 
-export {createUserRankTemplate};
+class UserRank {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createUserRankTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {UserRank as default};
