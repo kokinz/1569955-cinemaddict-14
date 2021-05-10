@@ -3,33 +3,42 @@ import {createElement} from '../utils.js';
 const getRank = (filters) => {
   const history = filters.find((filter) => filter.name === 'History');
 
-  switch (true) {
-    case history.count === 0:
-      return '';
-    case history.count > 0 && history.count <= 10:
-      return 'Novice';
-    case history.count > 10 && history.count <= 20:
-      return 'Fun';
-    case history.count > 20:
-      return 'Movie Buff';
+  if (history.count === 0) {
+    return '';
+  }
+
+  if (history.count > 0 && history.count <= 10) {
+    return 'Novice';
+  }
+
+  if (history.count > 10 && history.count <= 20) {
+    return 'Fun';
+  }
+
+  if (history.count > 20) {
+    return 'Movie Buff';
   }
 };
 
 const createUserRankTemplate = (filters) => {
-  return `<section class="header__profile profile">
-    <p class="profile__rating">${getRank(filters)}</p>
-    <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-  </section>`;
+  if (getRank(filters) === '') {
+    return ' ';
+  } else {
+    return `<section class="header__profile profile">
+      <p class="profile__rating">${getRank(filters)}</p>
+      <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+    </section>`;
+  }
 };
 
 class UserRank {
-  constructor(film) {
-    this._film = film;
+  constructor(filters) {
+    this._filters = filters;
     this._element = null;
   }
 
   getTemplate() {
-    return createUserRankTemplate(this._film);
+    return createUserRankTemplate(this._filters);
   }
 
   getElement() {

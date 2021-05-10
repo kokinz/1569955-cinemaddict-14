@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {posters, titles, descriptions, directors, writers, actors, countries, genres, texts, emotions, autors} from './mock-data.js';
+import {posters, titles, descriptions, directors, writers, actors, countries, genres, texts, emotions, authors} from './mock-data.js';
 
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -97,7 +97,7 @@ const getRandomEmotion = () => {
 };
 
 const getRandomAutors = () => {
-  return autors[getRandomInteger(0, autors.length - 1)];
+  return authors[getRandomInteger(0, authors.length - 1)];
 };
 
 const getCommentDate = (formatDate) => {
