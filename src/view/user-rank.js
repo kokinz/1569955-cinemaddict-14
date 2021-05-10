@@ -3,15 +3,20 @@ import {createElement} from '../utils.js';
 const getRank = (filters) => {
   const history = filters.find((filter) => filter.name === 'History');
 
-  switch (true) {
-    case history.count === 0:
-      return '';
-    case history.count > 0 && history.count <= 10:
-      return 'Novice';
-    case history.count > 10 && history.count <= 20:
-      return 'Fun';
-    case history.count > 20:
-      return 'Movie Buff';
+  if (history.count === 0) {
+    return '';
+  }
+
+  if (history.count > 0 && history.count <= 10) {
+    return 'Novice';
+  }
+
+  if (history.count > 10 && history.count <= 20) {
+    return 'Fun';
+  }
+
+  if (history.count > 20) {
+    return 'Movie Buff';
   }
 };
 

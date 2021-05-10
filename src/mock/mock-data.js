@@ -92,11 +92,11 @@ const emotions = [
   'smile',
 ];
 
-const autors = [
+const authors = [
   'John Doe',
   'Tim Macoveev',
   'Ilya O\'Reilly',
 ];
 
 
-export {posters, titles, descriptions, directors, writers, actors, countries, genres, texts, emotions, autors};
+export {posters, titles, descriptions, directors, writers, actors, countries, genres, texts, emotions, authors};

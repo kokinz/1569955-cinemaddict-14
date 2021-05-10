@@ -13,7 +13,7 @@ import {render, RenderPosition} from './utils.js';
 
 const FILMS_CARD_COUNTER = 5;
 const EXTRA_FILMS_COUNTER = 2;
-const FILMS_COUNT = 20;
+const FILMS_COUNT = 30;
 
 const films = new Array(FILMS_COUNT).fill().map(generateFilm);
 const filters = generateFilters(films);
@@ -23,7 +23,7 @@ const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 const footerStatistics = siteFooterElement.querySelector('.footer__statistics');
 
-const renderFilm = (FilmListElement, film) => {
+const renderFilm = (filmListElement, film) => {
   const filmComponent = new FilmCardView(film);
   const filmPopupComponent = new FilmPopupView(film);
 
@@ -75,7 +75,7 @@ const renderFilm = (FilmListElement, film) => {
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(FilmListElement, filmComponent.getElement(), RenderPosition.BEFOREEND);
+  render(filmListElement, filmComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
 const renderFilms = (container, films) => {
