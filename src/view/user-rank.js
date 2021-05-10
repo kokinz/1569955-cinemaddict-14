@@ -16,20 +16,24 @@ const getRank = (filters) => {
 };
 
 const createUserRankTemplate = (filters) => {
-  return `<section class="header__profile profile">
-    <p class="profile__rating">${getRank(filters)}</p>
-    <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-  </section>`;
+  if (getRank(filters) === '') {
+    return ' ';
+  } else {
+    return `<section class="header__profile profile">
+      <p class="profile__rating">${getRank(filters)}</p>
+      <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+    </section>`;
+  }
 };
 
 class UserRank {
-  constructor(film) {
-    this._film = film;
+  constructor(filters) {
+    this._filters = filters;
     this._element = null;
   }
 
   getTemplate() {
-    return createUserRankTemplate(this._film);
+    return createUserRankTemplate(this._filters);
   }
 
   getElement() {
