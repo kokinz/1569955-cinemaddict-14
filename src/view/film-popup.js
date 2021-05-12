@@ -146,10 +146,24 @@ class FilmPopup extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+
+    this._filmPopupClickHandler = this._filmPopupClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmPopupTemplate(this._film);
+  }
+
+  _filmPopupClickHandler(evt) {
+    evt.preventDefault();
+
+    this._callback.popupClick();
+  }
+
+  setFilmPopupClickHandler(callback) {
+    this._callback.popupClick = callback;
+
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._filmPopupClickHandler);
   }
 }
 
