@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import {getTimeFormat, checkList, createElement} from '../utils.js';
+import AbstractView from './abstract.js';
+import {getTimeFormat, checkList} from '../utils.js';
 
 const createFilmCardTemplate = (film) => {
   const {title, rating, date, runTime, genres, poster, description, comments, isWatchlist, isWatched, isFavorite} = film;
@@ -23,26 +24,14 @@ const createFilmCardTemplate = (film) => {
   </article>`;
 };
 
-class FilmCard {
+class FilmCard extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

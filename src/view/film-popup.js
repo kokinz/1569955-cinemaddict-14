@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import {getTimeFormat, checkList, createElement} from '../utils.js';
+import AbstractView from './abstract.js';
+import {getTimeFormat, checkList} from '../utils.js';
 
 const createFilmPopupTemplate = (film) => {
   const {title, alternative_title, rating, age_rating, director, writers, actors, date, runTime, country, genres, poster, description, comments, isWatchlist, isWatched, isFavorite} = film;
@@ -141,26 +142,14 @@ const createFilmPopupTemplate = (film) => {
   </section>`;
 };
 
-class FilmPopup {
+class FilmPopup extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmPopupTemplate(this._film);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

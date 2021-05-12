@@ -1,29 +1,17 @@
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const createMoviesCounterTemplate = (films) => {
   return `<p>${films.length} movies inside</p>`;
 };
 
-class MoviesCounter {
+class MoviesCounter extends AbstractView {
   constructor(films) {
+    super();
     this._films = films;
-    this._element = null;
   }
 
   getTemplate() {
     return createMoviesCounterTemplate(this._films);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
