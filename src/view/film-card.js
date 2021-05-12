@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
-import {getTimeFormat, checkList} from '../utils.js';
+import {getTimeFormat, checkList} from '../utils/film.js';
 
 const createFilmCardTemplate = (film) => {
   const {title, rating, date, runTime, genres, poster, description, comments, isWatchlist, isWatched, isFavorite} = film;

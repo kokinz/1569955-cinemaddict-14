@@ -9,7 +9,7 @@ import MoviesCounterView from './view/movies-counter.js';
 
 import {generateFilm} from './mock/film.js';
 import {generateFilters} from './mock/filters.js';
-import {render, RenderPosition} from './utils.js';
+import {render, RenderPosition, remove} from './utils/render.js';
 
 const FILMS_CARD_COUNTER = 5;
 const EXTRA_FILMS_COUNTER = 2;
@@ -59,17 +59,17 @@ const renderFilm = (filmListElement, film) => {
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(filmListElement, filmComponent.getElement(), RenderPosition.BEFOREEND);
+  render(filmListElement, filmComponent, RenderPosition.BEFOREEND);
 };
 
 const renderFilms = (container, films) => {
   if (films.length <= 0) {
-    render(container, new NoFilmsView().getElement());
+    render(container, new NoFilmsView());
 
     return;
   }
 
-  render(container, new FilmListView().getElement());
+  render(container, new FilmListView());
 
   const filmListElement = container.querySelector('.films-list__container');
   const extraFilmListsElements = container.querySelectorAll('.films-list--extra .films-list__container');
@@ -83,7 +83,7 @@ const renderFilms = (container, films) => {
 
     const showMoreButton = new ShowMoreView();
 
-    render(filmListElement, showMoreButton.getElement(), RenderPosition.AFTEREND);
+    render(filmListElement, showMoreButton, RenderPosition.AFTEREND);
 
     showMoreButton.setShowMoreClickHandler(() => {
       films
@@ -93,8 +93,7 @@ const renderFilms = (container, films) => {
       renderedFilmsCount += FILMS_CARD_COUNTER;
 
       if (renderedFilmsCount >= films.length) {
-        showMoreButton.getElement().remove();
-        showMoreButton.removeElement();
+        remove(showMoreButton);
       }
     });
   }
@@ -106,7 +105,7 @@ const renderFilms = (container, films) => {
   }
 };
 
-render(siteHeaderElement, new UserRankView(filters).getElement());
-render(siteMainElement, new SiteMenuView(filters).getElement(), RenderPosition.AFTERBEGIN);
-render(footerStatistics, new MoviesCounterView(films).getElement());
+render(siteHeaderElement, new UserRankView(filters));
+render(siteMainElement, new SiteMenuView(filters), RenderPosition.AFTERBEGIN);
+render(footerStatistics, new MoviesCounterView(films));
 renderFilms(siteMainElement, films);
