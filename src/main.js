@@ -9,11 +9,11 @@ import MoviesCounterView from './view/movies-counter.js';
 
 import {generateFilm} from './mock/film.js';
 import {generateFilters} from './mock/filters.js';
-import {render, RenderPosition} from './utils.js';
+import {render, RenderPosition, remove} from './utils/render.js';
 
 const FILMS_CARD_COUNTER = 5;
 const EXTRA_FILMS_COUNTER = 2;
-const FILMS_COUNT = 30;
+const FILMS_COUNT = 23;
 
 const films = new Array(FILMS_COUNT).fill().map(generateFilm);
 const filters = generateFilters(films);
@@ -27,17 +27,13 @@ const renderFilm = (filmListElement, film) => {
   const filmComponent = new FilmCardView(film);
   const filmPopupComponent = new FilmPopupView(film);
 
-  const renderPopup = (evt) => {
-    evt.preventDefault();
-
+  const renderPopup = () => {
     siteMainElement.parentNode.appendChild(filmPopupComponent.getElement());
 
     siteMainElement.parentNode.classList.add('hide-overflow');
   };
 
-  const removePopup = (evt) => {
-    evt.preventDefault();
-
+  const removePopup = () => {
     siteMainElement.parentNode.removeChild(filmPopupComponent.getElement());
 
     siteMainElement.parentNode.classList.remove('hide-overflow');
@@ -51,41 +47,29 @@ const renderFilm = (filmListElement, film) => {
     }
   };
 
-  filmComponent.getElement().querySelector('.film-card__poster').addEventListener('click', (evt) => {
-    renderPopup(evt);
+  filmComponent.setFilmClickHandler(() => {
+    renderPopup();
 
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  filmComponent.getElement().querySelector('.film-card__title').addEventListener('click', (evt) => {
-    renderPopup(evt);
-
-    document.addEventListener('keydown', onEscKeyDown);
-  });
-
-  filmComponent.getElement().querySelector('.film-card__comments').addEventListener('click', (evt) => {
-    renderPopup(evt);
-
-    document.addEventListener('keydown', onEscKeyDown);
-  });
-
-  filmPopupComponent.getElement().querySelector('.film-details__close-btn').addEventListener('click', (evt) => {
-    removePopup(evt);
+  filmPopupComponent.setFilmPopupClickHandler(() => {
+    removePopup();
 
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(filmListElement, filmComponent.getElement(), RenderPosition.BEFOREEND);
+  render(filmListElement, filmComponent, RenderPosition.BEFOREEND);
 };
 
 const renderFilms = (container, films) => {
   if (films.length <= 0) {
-    render(container, new NoFilmsView().getElement());
+    render(container, new NoFilmsView());
 
     return;
   }
 
-  render(container, new FilmListView().getElement());
+  render(container, new FilmListView());
 
   const filmListElement = container.querySelector('.films-list__container');
   const extraFilmListsElements = container.querySelectorAll('.films-list--extra .films-list__container');
@@ -99,11 +83,9 @@ const renderFilms = (container, films) => {
 
     const showMoreButton = new ShowMoreView();
 
-    render(filmListElement, showMoreButton.getElement(), RenderPosition.AFTEREND);
+    render(filmListElement, showMoreButton, RenderPosition.AFTEREND);
 
-    showMoreButton.getElement().addEventListener('click', (evt) => {
-      evt.preventDefault();
-
+    showMoreButton.setShowMoreClickHandler(() => {
       films
         .slice(renderedFilmsCount, renderedFilmsCount + FILMS_CARD_COUNTER)
         .forEach((film) => renderFilm(filmListElement, film));
@@ -111,8 +93,7 @@ const renderFilms = (container, films) => {
       renderedFilmsCount += FILMS_CARD_COUNTER;
 
       if (renderedFilmsCount >= films.length) {
-        showMoreButton.getElement().remove();
-        showMoreButton.removeElement();
+        remove(showMoreButton);
       }
     });
   }
@@ -124,7 +105,7 @@ const renderFilms = (container, films) => {
   }
 };
 
-render(siteHeaderElement, new UserRankView(filters).getElement());
-render(siteMainElement, new SiteMenuView(filters).getElement(), RenderPosition.AFTERBEGIN);
-render(footerStatistics, new MoviesCounterView(films).getElement());
+render(siteHeaderElement, new UserRankView(filters));
+render(siteMainElement, new SiteMenuView(filters), RenderPosition.AFTERBEGIN);
+render(footerStatistics, new MoviesCounterView(films));
 renderFilms(siteMainElement, films);

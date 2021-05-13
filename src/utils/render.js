@@ -1,21 +1,20 @@
+import Abstract from '../view/abstract.js';
+
 const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
   AFTEREND: 'afterend',
 };
 
-const getTimeFormat = (time) => {
-  const hours = Math.floor(time / 60);
-  const minutes = Math.floor(time % 60);
-
-  return hours > 0 ? hours + 'h ' + minutes + 'm' : minutes + 'm';
-};
-
-const checkList = (value) => {
-  return value ? true : false;
-};
-
 const render = (container, element, place = 'beforeend') => {
+  if (container instanceof Abstract) {
+    container = container.getElement();
+  }
+
+  if (element instanceof Abstract) {
+    element = element.getElement();
+  }
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -39,4 +38,13 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export {RenderPosition, getTimeFormat, checkList, render, renderTemplate, createElement};
+const remove = (component) => {
+  if (!(component instanceof Abstract)) {
+    throw new Error('Can remove only components');
+  }
+
+  component.getElement().remove();
+  component.removeElement();
+};
+
+export {RenderPosition, render, renderTemplate, createElement, remove};
