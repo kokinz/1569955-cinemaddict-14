@@ -1,9 +1,9 @@
-import SiteMenuView from './view/site-menu.js';
-import FilmListView from './view/film-lists.js';
-import NoFilmsView from './view/no-films.js';
-import ShowMoreView from './view/show-more-button.js';
-import FilmCardView from './view/film-card.js';
-import FilmPopupView from './view/film-popup.js';
+import SortMenuView from '../view/sort-menu.js';
+import FilmListView from '../view/film-lists.js';
+import NoFilmsView from '../view/no-films.js';
+import ShowMoreView from '../view/show-more-button.js';
+import FilmCardView from '../view/film-card.js';
+import FilmPopupView from '../view/film-popup.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 
 const FILMS_COUNTER = 5;
@@ -13,7 +13,7 @@ class Board {
   constructor (boardContainer) {
     this._boardContainer = boardContainer;
 
-    this._siteMenuComponent = new SiteMenuView();
+    this._sortMenuComponent = new SortMenuView();
     this._movieListComponent = new FilmListView();
     this._noMoviesComponent = new NoFilmsView();
     this._showMoreComponent = new ShowMoreView();
@@ -31,11 +31,11 @@ class Board {
     this._renderBoard();
   }
 
-  _renderSiteMenu() {
-    render(this._boardContainer, this._siteMenuComponent, RenderPosition.AFTERBEGIN);
+  _renderSortMenu() {
+    render(this._movieListComponent, this._sortMenuComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _renderMovie(movie) {
+  _renderMovie(container, movie) {
     const filmComponent = new FilmCardView(movie);
     const filmPopupComponent = new FilmPopupView(movie);
 
@@ -72,13 +72,13 @@ class Board {
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
-    render(this._filmsContainer, filmComponent, RenderPosition.BEFOREEND);
+    render(container, filmComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderMovies(from, to) {
+  _renderMovies(container, from, to) {
     this._boardFilms
       .slice(from, to)
-      .forEach((boardFilm) => this._renderMovie(boardFilm));
+      .forEach((boardFilm) => this._renderMovie(container, boardFilm));
   }
 
   _renderNoMovies() {
@@ -93,7 +93,7 @@ class Board {
     render(this._filmsContainer, showMoreButton, RenderPosition.AFTEREND);
 
     showMoreButton.setShowMoreClickHandler(() => {
-      this._renderMovies(renderedFilmsCount, renderedFilmsCount + FILMS_COUNTER);
+      this._renderMovies(this._filmsContainer, renderedFilmsCount, renderedFilmsCount + FILMS_COUNTER);
 
       renderedFilmsCount += FILMS_COUNTER;
 
@@ -104,7 +104,7 @@ class Board {
   }
 
   _renderMoviesLists() {
-    this._renderMovies(0, Math.min(this._boardFilms.length, FILMS_COUNTER));
+    this._renderMovies(this._filmsContainer, 0, Math.min(this._boardFilms.length, FILMS_COUNTER));
 
     if (this._boardFilms.length > FILMS_COUNTER) {
       this._renderShowMoreButton();
@@ -123,7 +123,7 @@ class Board {
       return;
     }
 
-    this._renderSiteMenu();
+    this._renderSortMenu();
     this._renderMoviesLists();
   }
 }
