@@ -2,9 +2,9 @@ import SortMenuView from '../view/sort-menu.js';
 import FilmListView from '../view/film-lists.js';
 import NoFilmsView from '../view/no-films.js';
 import ShowMoreView from '../view/show-more-button.js';
-import FilmCardView from '../view/film-card.js';
-import FilmPopupView from '../view/film-popup.js';
-import {render, RenderPosition, remove} from '../utils/render.js';
+import FilmPresenter from './film.js';
+import {render, remove, RenderPosition} from '../utils/render.js';
+
 
 const FILMS_COUNTER = 5;
 const EXTRA_FILMS_COUNTER = 2;
@@ -12,12 +12,14 @@ const EXTRA_FILMS_COUNTER = 2;
 class Board {
   constructor (boardContainer) {
     this._boardContainer = boardContainer;
+    this._renderedFilmsCount = FILMS_COUNTER;
 
     this._sortMenuComponent = new SortMenuView();
     this._movieListComponent = new FilmListView();
     this._noMoviesComponent = new NoFilmsView();
     this._showMoreComponent = new ShowMoreView();
 
+    this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
   init(boardFilms) {
@@ -36,43 +38,8 @@ class Board {
   }
 
   _renderMovie(container, movie) {
-    const filmComponent = new FilmCardView(movie);
-    const filmPopupComponent = new FilmPopupView(movie);
-
-    const renderPopup = () => {
-      this._boardContainer.parentNode.appendChild(filmPopupComponent.getElement());
-
-      this._boardContainer.parentNode.classList.add('hide-overflow');
-    };
-
-    const removePopup = () => {
-      this._boardContainer.parentNode.removeChild(filmPopupComponent.getElement());
-
-      this._boardContainer.parentNode.classList.remove('hide-overflow');
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        removePopup();
-
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    filmComponent.setFilmClickHandler(() => {
-      renderPopup();
-
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    filmPopupComponent.setFilmPopupClickHandler(() => {
-      removePopup();
-
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    render(container, filmComponent, RenderPosition.BEFOREEND);
+    const filmPresenter = new FilmPresenter(container);
+    filmPresenter.init(movie);
   }
 
   _renderMovies(container, from, to) {
@@ -85,22 +52,20 @@ class Board {
     render(this._boardContainer, this._noMoviesComponent, RenderPosition.AFTERBEGIN);
   }
 
+  _handleShowMoreButtonClick() {
+    this._renderMovies(this._filmsContainer, this._renderedFilmsCount, this._renderedFilmsCount + FILMS_COUNTER);
+
+    this._renderedFilmsCount += FILMS_COUNTER;
+
+    if (this._renderedFilmsCount >= this._boardFilms.length) {
+      remove(this._showMoreComponent);
+    }
+  }
+
   _renderShowMoreButton() {
-    let renderedFilmsCount = FILMS_COUNTER;
+    render(this._filmsContainer, this._showMoreComponent, RenderPosition.AFTEREND);
 
-    const showMoreButton = new ShowMoreView();
-
-    render(this._filmsContainer, showMoreButton, RenderPosition.AFTEREND);
-
-    showMoreButton.setShowMoreClickHandler(() => {
-      this._renderMovies(this._filmsContainer, renderedFilmsCount, renderedFilmsCount + FILMS_COUNTER);
-
-      renderedFilmsCount += FILMS_COUNTER;
-
-      if (renderedFilmsCount >= this._boardFilms.length) {
-        remove(showMoreButton);
-      }
-    });
+    this._showMoreComponent.setShowMoreClickHandler(this._handleShowMoreButtonClick);
   }
 
   _renderMoviesLists() {

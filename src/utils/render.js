@@ -1,5 +1,7 @@
 import Abstract from '../view/abstract.js';
 
+const pageBody = document.querySelector('body');
+
 const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
@@ -47,4 +49,16 @@ const remove = (component) => {
   component.removeElement();
 };
 
-export {RenderPosition, render, renderTemplate, createElement, remove};
+const renderPopup = (component) => {
+  pageBody.appendChild(component.getElement());
+
+  pageBody.classList.add('hide-overflow');
+};
+
+const removePopup = (component) => {
+  pageBody.removeChild(component.getElement());
+
+  pageBody.classList.remove('hide-overflow');
+};
+
+export {RenderPosition, render, renderTemplate, createElement, remove, renderPopup, removePopup};
