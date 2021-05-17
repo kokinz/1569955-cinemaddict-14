@@ -2,13 +2,20 @@ import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
 import {render, RenderPosition, remove, replace, removePopup, renderPopup} from '../utils/render.js';
 
+const Mode = {
+  OPENED: 'OPENED',
+  CLOSED: 'CLOSED',
+};
+
 class Film {
-  constructor(filmListContainer, changeData) {
+  constructor(filmListContainer, changeData, changeMode) {
     this._filmListContainer = filmListContainer;
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._filmComponent = null;
     this._filmPopupComponent = null;
+    this._mode = Mode.CLOSED;
 
     this._handleOpenClick = this._handleOpenClick.bind(this);
     this._handleCloseClick = this._handleCloseClick.bind(this);
@@ -55,14 +62,26 @@ class Film {
     remove(this._filmPopupComponent);
   }
 
+  resetView() {
+    if (this._mode !== Mode.CLOSED) {
+      this._removePopup();
+    }
+  }
+
   _renderPopup() {
-    renderPopup(this._filmPopupComponent);
     document.addEventListener('keydown', this._escKeyDownHandler);
+
+    this._changeMode();
+
+    renderPopup(this._filmPopupComponent);
+    this._mode = Mode.OPENED;
   }
 
   _removePopup() {
     removePopup(this._filmPopupComponent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
+
+    this._mode = Mode.CLOSED;
   }
 
   _escKeyDownHandler(evt) {

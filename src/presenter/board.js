@@ -22,6 +22,7 @@ class Board {
     this._showMoreComponent = new ShowMoreView();
 
     this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
@@ -36,6 +37,12 @@ class Board {
     this._renderBoard();
   }
 
+  _handleModeChange() {
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.resetView());
+  }
+
   _handleFilmChange(updatedFilm) {
     this._boardFilms = updateItem(this._boardFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
@@ -46,7 +53,7 @@ class Board {
   }
 
   _renderMovie(container, movie) {
-    const filmPresenter = new FilmPresenter(container, this._handleFilmChange);
+    const filmPresenter = new FilmPresenter(container, this._handleFilmChange, this._handleModeChange);
 
     filmPresenter.init(movie);
 
