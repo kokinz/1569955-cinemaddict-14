@@ -3,6 +3,7 @@ import FilmListView from '../view/film-lists.js';
 import NoFilmsView from '../view/no-films.js';
 import ShowMoreView from '../view/show-more-button.js';
 import FilmPresenter from './film.js';
+import {updateItem} from '../utils/common.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
 
 
@@ -13,12 +14,14 @@ class Board {
   constructor (boardContainer) {
     this._boardContainer = boardContainer;
     this._renderedFilmsCount = FILMS_COUNTER;
+    this._filmPresenter = {};
 
     this._sortMenuComponent = new SortMenuView();
     this._movieListComponent = new FilmListView();
     this._noMoviesComponent = new NoFilmsView();
     this._showMoreComponent = new ShowMoreView();
 
+    this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
@@ -33,13 +36,21 @@ class Board {
     this._renderBoard();
   }
 
+  _handleFilmChange(updatedFilm) {
+    this._boardFilms = updateItem(this._boardFilms, updatedFilm);
+    this._filmPresenter[updatedFilm.id].init(updatedFilm);
+  }
+
   _renderSortMenu() {
     render(this._movieListComponent, this._sortMenuComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderMovie(container, movie) {
-    const filmPresenter = new FilmPresenter(container);
+    const filmPresenter = new FilmPresenter(container, this._handleFilmChange);
+
     filmPresenter.init(movie);
+
+    this._filmPresenter[movie.id] = filmPresenter;
   }
 
   _renderMovies(container, from, to) {
@@ -66,6 +77,15 @@ class Board {
     render(this._filmsContainer, this._showMoreComponent, RenderPosition.AFTEREND);
 
     this._showMoreComponent.setShowMoreClickHandler(this._handleShowMoreButtonClick);
+  }
+
+  _clearFilmList() {
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenter = {};
+    this._renderedFilmsCount = FILMS_COUNTER;
+    remove(this._showMoreComponent);
   }
 
   _renderMoviesLists() {

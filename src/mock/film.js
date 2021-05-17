@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 import {posters, titles, descriptions, directors, writers, actors, countries, genres, texts, emotions, authors} from './mock-data.js';
 
 const getRandomInteger = (a = 0, b = 1) => {
@@ -121,6 +122,7 @@ const getRandomComments = (count) => {
 
 const generateFilm = () => {
   return {
+    id: nanoid(),
     poster: getRandomPoster(),
     title: getRandomTitle(),
     alternative_title: getRandomTitle(),
