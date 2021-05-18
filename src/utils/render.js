@@ -1,5 +1,7 @@
 import Abstract from '../view/abstract.js';
 
+const pageBody = document.querySelector('body');
+
 const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
@@ -47,4 +49,34 @@ const remove = (component) => {
   component.removeElement();
 };
 
-export {RenderPosition, render, renderTemplate, createElement, remove};
+const replace = (newChild, oldChild) => {
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof Abstract) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+
+  parent.replaceChild(newChild, oldChild);
+};
+
+const renderPopup = (component) => {
+  pageBody.appendChild(component.getElement());
+
+  pageBody.classList.add('hide-overflow');
+};
+
+const removePopup = (component) => {
+  pageBody.removeChild(component.getElement());
+
+  pageBody.classList.remove('hide-overflow');
+};
+
+export {RenderPosition, render, renderTemplate, createElement, remove, replace, renderPopup, removePopup};
