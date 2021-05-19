@@ -5,6 +5,8 @@ import ShowMoreView from '../view/show-more-button.js';
 import FilmPresenter from './film.js';
 import {updateItem} from '../utils/common.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
+import {sortFilmDate, sortFilmRating} from '../utils/film.js';
+import {SortType} from '../const.js';
 
 
 const FILMS_COUNTER = 5;
@@ -14,6 +16,8 @@ class Board {
   constructor (boardContainer) {
     this._boardContainer = boardContainer;
     this._renderedFilmsCount = FILMS_COUNTER;
+    this._currentSortType = SortType.DEFAULT;
+
     this._filmPresenter = {};
     this._topRatedPresenter = {};
     this._mostCommentedPresenter = {};
@@ -26,10 +30,12 @@ class Board {
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(boardFilms) {
     this._boardFilms = boardFilms.slice();
+    this._sourcedBoardFilms = boardFilms.slice();
 
     render(this._boardContainer, this._movieListComponent);
 
@@ -62,14 +68,49 @@ class Board {
 
   _handleFilmChange(updatedFilm) {
     this._boardFilms = updateItem(this._boardFilms, updatedFilm);
+    this._sourcedBoardFilms = updateItem(this._sourcedBoardFilms, updatedFilm);
 
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
     this._topRatedPresenter[updatedFilm.id].init(updatedFilm);
     this._mostCommentedPresenter[updatedFilm.id].init(updatedFilm);
   }
 
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.DATE_DOWN:
+        this._boardFilms.sort(sortFilmDate);
+        break;
+      case SortType.RATING_DOWN:
+        this._boardFilms.sort(sortFilmRating);
+        break;
+      default:
+        this._boardFilms = this._sourcedBoardFilms.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType, activeButton) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    const prevActiveButton = this._sortMenuComponent.getElement().querySelector('.sort__button--active');
+
+    if (prevActiveButton) {
+      prevActiveButton.classList.remove('sort__button--active');
+    }
+
+    activeButton.classList.add('sort__button--active');
+
+    this._sortFilms(sortType);
+    this._clearFilmList();
+    this._renderMoviesLists();
+  }
+
   _renderSortMenu() {
     render(this._movieListComponent, this._sortMenuComponent, RenderPosition.AFTERBEGIN);
+    this._sortMenuComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderMovie(container, movie) {
@@ -120,7 +161,17 @@ class Board {
     Object
       .values(this._filmPresenter)
       .forEach((presenter) => presenter.destroy());
+    Object
+      .values(this._topRatedPresenter)
+      .forEach((presenter) => presenter.destroy());
+    Object
+      .values(this._mostCommentedPresenter)
+      .forEach((presenter) => presenter.destroy());
+
     this._filmPresenter = {};
+    this._topRatedPresenter = {};
+    this._mostCommentedPresenter = {};
+
     this._renderedFilmsCount = FILMS_COUNTER;
     remove(this._showMoreComponent);
   }
