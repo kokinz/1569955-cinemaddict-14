@@ -26,7 +26,11 @@ class SortMenu extends AbstractView {
     }
 
     evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType, evt.target);
+
+    this._element.querySelector('.sort__button--active').classList.remove('sort__button--active');
+    evt.target.classList.add('sort__button--active');
+
+    this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 
   setSortTypeChangeHandler(callback) {
