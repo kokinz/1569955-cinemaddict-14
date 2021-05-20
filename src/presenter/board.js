@@ -1,5 +1,7 @@
 import SortMenuView from '../view/sort-menu.js';
 import FilmListView from '../view/film-lists.js';
+import TopRatedView from '../view/top-rated-list.js';
+import MostCommentedView from '../view/most-commented-list.js';
 import NoFilmsView from '../view/no-films.js';
 import ShowMoreView from '../view/show-more-button.js';
 import FilmPresenter from './film.js';
@@ -24,6 +26,8 @@ class Board {
 
     this._sortMenuComponent = new SortMenuView();
     this._movieListComponent = new FilmListView();
+    this._topRatedComponent = new TopRatedView();
+    this._mostCommentedComponent = new MostCommentedView();
     this._noMoviesComponent = new NoFilmsView();
     this._showMoreComponent = new ShowMoreView();
 
@@ -38,18 +42,12 @@ class Board {
     this._sourcedBoardFilms = boardFilms.slice();
 
     render(this._boardContainer, this._movieListComponent);
+    render(this._movieListComponent, this._topRatedComponent);
+    render(this._movieListComponent, this._mostCommentedComponent);
 
-    this._filmsContainer = this._boardContainer.querySelector('.films-list .films-list__container');
-    this._extraFilmLists = this._boardContainer.querySelectorAll('.films-list--extra');
-
-    this._extraFilmLists.forEach((list) => {
-      if (list.textContent.includes('Top rated')) {
-        this._topRatedContainer = list.querySelector('.films-list__container');
-      }
-      if (list.textContent.includes('Most commented')) {
-        this._mostCommentedContainer = list.querySelector('.films-list__container');
-      }
-    });
+    this._filmsContainer = this._movieListComponent.getContainer();
+    this._topRatedContainer = this._topRatedComponent.getContainer();
+    this._mostCommentedContainer = this._mostCommentedComponent.getContainer();
 
     this._renderBoard();
   }
@@ -77,11 +75,11 @@ class Board {
 
   _sortFilms(sortType) {
     switch (sortType) {
-      case SortType.DATE_DOWN:
-        this._boardFilms.sort(sortFilmDate);
+      case SortType.DATE_DESC:
+        this._boardFilms = sortFilmDate(this._boardFilms);
         break;
-      case SortType.RATING_DOWN:
-        this._boardFilms.sort(sortFilmRating);
+      case SortType.RATING_DESC:
+        this._boardFilms = sortFilmRating(this._boardFilms);
         break;
       default:
         this._boardFilms = this._sourcedBoardFilms.slice();
@@ -90,18 +88,10 @@ class Board {
     this._currentSortType = sortType;
   }
 
-  _handleSortTypeChange(sortType, activeButton) {
+  _handleSortTypeChange(sortType) {
     if (this._currentSortType === sortType) {
       return;
     }
-
-    const prevActiveButton = this._sortMenuComponent.getElement().querySelector('.sort__button--active');
-
-    if (prevActiveButton) {
-      prevActiveButton.classList.remove('sort__button--active');
-    }
-
-    activeButton.classList.add('sort__button--active');
 
     this._sortFilms(sortType);
     this._clearFilmList();
@@ -109,7 +99,7 @@ class Board {
   }
 
   _renderSortMenu() {
-    render(this._movieListComponent, this._sortMenuComponent, RenderPosition.AFTERBEGIN);
+    render(this._movieListComponent, this._sortMenuComponent, RenderPosition.BEFOREBEGIN);
     this._sortMenuComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 

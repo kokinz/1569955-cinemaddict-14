@@ -7,24 +7,20 @@ const createFilmListsTemplate = () => {
 
       <div class="films-list__container"></div>
     </section>
-
-    <section class="films-list films-list--extra">
-      <h2 class="films-list__title">Top rated</h2>
-
-      <div class="films-list__container"></div>
-    </section>
-
-    <section class="films-list films-list--extra">
-      <h2 class="films-list__title">Most commented</h2>
-
-      <div class="films-list__container"></div>
-    </section>
   </section>`;
 };
 
 class FilmList extends AbstractView {
   getTemplate() {
     return createFilmListsTemplate();
+  }
+
+  getContainer() {
+    if (this._element === null) {
+      throw new Error('Need to create element.');
+    }
+
+    return this._element.querySelector('.films-list__container');
   }
 }
 

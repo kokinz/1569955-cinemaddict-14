@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
-import AbstractView from './abstract.js';
+import SmartView  from './smart.js';
 import {getTimeFormat, checkList} from '../utils/film.js';
+import {render, createElement, RenderPosition} from '../utils/render.js';
 
 const createFilmPopupTemplate = (film) => {
   const {title, alternative_title, rating, age_rating, director, writers, actors, date, runTime, country, genres, poster, description, comments, isWatchlist, isWatched, isFavorite} = film;
@@ -142,7 +143,7 @@ const createFilmPopupTemplate = (film) => {
   </section>`;
 };
 
-class FilmPopup extends AbstractView {
+class FilmPopup extends SmartView {
   constructor(film) {
     super();
     this._film = film;
@@ -151,6 +152,24 @@ class FilmPopup extends AbstractView {
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._emojiClickHandler = this._emojiClickHandler.bind(this);
+  }
+
+  _emojiClickHandler(evt) {
+    evt.preventDefault();
+
+    const container = this.getElement().querySelector('.film-details__add-emoji-label');
+
+    if (container.querySelector('img')) {
+      const emojiImg = this.getElement().querySelector('.film-details__add-emoji-label img');
+
+      emojiImg.src = `images/emoji/${evt.target.value}.png`;
+      emojiImg.alt = `emoji-${evt.target.value}`;
+    } else {
+      const element = createElement(`<img src="images/emoji/${evt.target.value}.png" width="55" height="55" alt="emoji-${evt.target.value}">`);
+
+      render(container, element, RenderPosition.BEFOREEND);
+    }
   }
 
   getTemplate() {
@@ -197,6 +216,18 @@ class FilmPopup extends AbstractView {
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('click', this._favoriteClickHandler);
+  }
+
+  setEmojiClickHandler() {
+    this.getElement().querySelector('.film-details__emoji-list').addEventListener('input', this._emojiClickHandler);
+  }
+
+  restoreHandlers() {
+    this.setFilmPopupClickHandler(this._callback.popupClick);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setEmojiClickHandler();
   }
 }
 
