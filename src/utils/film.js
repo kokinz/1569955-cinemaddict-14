@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 const getTimeFormat = (time) => {
   const hours = Math.floor(time / 60);
   const minutes = Math.floor(time % 60);
@@ -9,4 +11,12 @@ const checkList = (value) => {
   return value ? true : false;
 };
 
-export {getTimeFormat, checkList};
+const sortFilmDate = (filmA, filmB) => {
+  return dayjs(filmB.date).diff(dayjs(filmA.date));
+};
+
+const sortFilmRating = (filmA, filmB) => {
+  return filmB.rating - filmA.rating;
+};
+
+export {getTimeFormat, checkList, sortFilmDate, sortFilmRating};
