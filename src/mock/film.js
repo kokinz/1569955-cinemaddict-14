@@ -102,7 +102,7 @@ const getRandomAutors = () => {
 };
 
 const getCommentDate = (formatDate) => {
-  const randomDate = new Date(2021, 3, getRandomInteger(1, 30), getRandomInteger(0, 23), getRandomInteger(0, 59));
+  const randomDate = new Date(2021, 4, 20, getRandomInteger(0, 12), getRandomInteger(0, 59), getRandomInteger(0, 59));
 
   return dayjs(randomDate).format(formatDate);
 };
