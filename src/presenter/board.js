@@ -77,11 +77,11 @@ class Board {
 
   _sortFilms(sortType) {
     switch (sortType) {
-      case SortType.DATE_DOWN:
-        this._boardFilms.sort(sortFilmDate);
+      case SortType.DATE_DESC:
+        this._boardFilms = sortFilmDate(this._boardFilms);
         break;
-      case SortType.RATING_DOWN:
-        this._boardFilms.sort(sortFilmRating);
+      case SortType.RATING_DESC:
+        this._boardFilms = sortFilmRating(this._boardFilms);
         break;
       default:
         this._boardFilms = this._sourcedBoardFilms.slice();

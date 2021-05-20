@@ -1,7 +1,7 @@
 const SortType = {
   DEFAULT: 'default',
-  DATE_DOWN: 'date-down',
-  RATING_DOWN: 'rating-down',
+  DATE_DESC: 'date-descending',
+  RATING_DESC: 'rating-descending',
 };
 
 export {SortType};
