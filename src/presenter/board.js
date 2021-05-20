@@ -7,7 +7,7 @@ import ShowMoreView from '../view/show-more-button.js';
 import FilmPresenter from './film.js';
 import {updateItem} from '../utils/common.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
-import {sortFilmDate, sortFilmRating} from '../utils/film.js';
+import {sortFilmsByDate, sortFilmsByRating} from '../utils/film.js';
 import {SortType} from '../const.js';
 
 
@@ -76,10 +76,10 @@ class Board {
   _sortFilms(sortType) {
     switch (sortType) {
       case SortType.DATE_DESC:
-        this._boardFilms = sortFilmDate(this._boardFilms);
+        this._boardFilms = sortFilmsByDate(this._boardFilms);
         break;
       case SortType.RATING_DESC:
-        this._boardFilms = sortFilmRating(this._boardFilms);
+        this._boardFilms = sortFilmsByRating(this._boardFilms);
         break;
       default:
         this._boardFilms = this._sourcedBoardFilms.slice();
