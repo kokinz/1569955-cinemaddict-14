@@ -11,12 +11,12 @@ const checkList = (value) => {
   return value ? true : false;
 };
 
-const sortFilmDate = (films) => films.slice().sort((filmA, filmB) => {
+const sortFilmsByDate = (films) => films.slice().sort((filmA, filmB) => {
   return dayjs(filmB.date).diff(dayjs(filmA.date));
 });
 
-const sortFilmRating = (films) => films.slice().sort((filmA, filmB) => {
+const sortFilmsByRating = (films) => films.slice().sort((filmA, filmB) => {
   return filmB.rating - filmA.rating;
 });
 
-export {getTimeFormat, checkList, sortFilmDate, sortFilmRating};
+export {getTimeFormat, checkList, sortFilmsByDate, sortFilmsByRating};
