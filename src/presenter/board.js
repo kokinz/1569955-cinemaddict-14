@@ -15,7 +15,8 @@ const FILMS_COUNTER = 5;
 const EXTRA_FILMS_COUNTER = 2;
 
 class Board {
-  constructor (boardContainer) {
+  constructor (boardContainer, moviesModel) {
+    this._moviesModel = moviesModel;
     this._boardContainer = boardContainer;
     this._renderedFilmsCount = FILMS_COUNTER;
     this._currentSortType = SortType.DEFAULT;
@@ -50,6 +51,10 @@ class Board {
     this._mostCommentedContainer = this._mostCommentedComponent.getContainer();
 
     this._renderBoard();
+  }
+
+  _getMovies() {
+    return this._moviesModel._getMovies();
   }
 
   _handleModeChange() {

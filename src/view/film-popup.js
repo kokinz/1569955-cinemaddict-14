@@ -115,7 +115,7 @@ const createFilmPopupTemplate = (film) => {
             <div class="film-details__add-emoji-label">${film.userEmoji ? `<img src="images/emoji/${film.userEmoji}.png" width="55" height="55" alt="emoji-${film.userEmoji}">` : ' '}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${film.userComment}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${film.userComment ? film.userComment : ''}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -248,7 +248,7 @@ class FilmPopup extends SmartView {
       film,
       {
         userEmoji: null,
-        userComment: '',
+        userComment: null,
       },
     );
   }
