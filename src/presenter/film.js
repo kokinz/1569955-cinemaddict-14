@@ -79,6 +79,7 @@ class Film {
   }
 
   _removePopup() {
+    this._filmPopupComponent.updateElement();
     removePopup(this._filmPopupComponent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
 
