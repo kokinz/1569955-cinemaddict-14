@@ -8,7 +8,7 @@ import {render, RenderPosition} from './utils/render.js';
 
 import BoardPresenter from './presenter/board.js';
 
-import MoviesModel from './model/movies.js';
+// import MoviesModel from './model/movies.js';
 
 const FILMS_COUNT = 23;
 

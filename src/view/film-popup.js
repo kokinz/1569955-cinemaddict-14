@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import relativeTime  from 'dayjs/plugin/relativeTime';
 import SmartView  from './smart.js';
 import {getTimeFormat, checkList} from '../utils/film.js';
-import {render, createElement, RenderPosition} from '../utils/render.js';
+import {EmojiType} from '../const.js';
 
 dayjs.extend(relativeTime);
 
@@ -112,29 +112,29 @@ const createFilmPopupTemplate = (film) => {
           <ul class="film-details__comments-list">${renderComments()}</ul>
 
           <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label"></div>
+            <div class="film-details__add-emoji-label">${film.userEmoji ? `<img src="images/emoji/${film.userEmoji}.png" width="55" height="55" alt="emoji-${film.userEmoji}">` : ' '}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${film.userComment}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${film.userEmoji === EmojiType.SMILE ? 'checked' : ' '}>
               <label class="film-details__emoji-label" for="emoji-smile">
                 <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${film.userEmoji === EmojiType.SLEEPING ? 'checked' : ' '}>
               <label class="film-details__emoji-label" for="emoji-sleeping">
                 <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${film.userEmoji === EmojiType.PUKE ? 'checked' : ' '}>
               <label class="film-details__emoji-label" for="emoji-puke">
                 <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${film.userEmoji === EmojiType.ANGRY ? 'checked' : ' '}>
               <label class="film-details__emoji-label" for="emoji-angry">
                 <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
               </label>
@@ -149,34 +149,38 @@ const createFilmPopupTemplate = (film) => {
 class FilmPopup extends SmartView {
   constructor(film) {
     super();
-    this._film = film;
+    this._data = FilmPopup.parseFilmToData(film);
 
     this._filmPopupClickHandler = this._filmPopupClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
+    this._userCommentInputHandler = this._userCommentInputHandler.bind(this);
   }
 
   _emojiClickHandler(evt) {
     evt.preventDefault();
+    this.updateData({
+      userEmoji: evt.target.value,
+    }, false);
+  }
 
-    const container = this.getElement().querySelector('.film-details__add-emoji-label');
+  _userCommentInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      userComment: evt.target.value,
+    }, true);
+  }
 
-    if (container.querySelector('img')) {
-      const emojiImg = this.getElement().querySelector('.film-details__add-emoji-label img');
-
-      emojiImg.src = `images/emoji/${evt.target.value}.png`;
-      emojiImg.alt = `emoji-${evt.target.value}`;
-    } else {
-      const element = createElement(`<img src="images/emoji/${evt.target.value}.png" width="55" height="55" alt="emoji-${evt.target.value}">`);
-
-      render(container, element, RenderPosition.BEFOREEND);
-    }
+  reset(film) {
+    this.updateData(
+      FilmPopup.parseFilmToData(film),
+    );
   }
 
   getTemplate() {
-    return createFilmPopupTemplate(this._film);
+    return createFilmPopupTemplate(this._data);
   }
 
   _watchlistClickHandler(evt) {
@@ -225,12 +229,37 @@ class FilmPopup extends SmartView {
     this.getElement().querySelector('.film-details__emoji-list').addEventListener('input', this._emojiClickHandler);
   }
 
+  setUserCommentInputHandler() {
+    this.getElement().querySelector('.film-details__comment-input').addEventListener('input', this._userCommentInputHandler);
+  }
+
   restoreHandlers() {
     this.setFilmPopupClickHandler(this._callback.popupClick);
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setWatchedClickHandler(this._callback.watchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setEmojiClickHandler();
+    this.setUserCommentInputHandler();
+  }
+
+  static parseFilmToData(film) {
+    return Object.assign(
+      {},
+      film,
+      {
+        userEmoji: null,
+        userComment: '',
+      },
+    );
+  }
+
+  static parseDataToTask(data) {
+    data = Object.assign({}, data);
+
+    delete data.userEmoji;
+    delete data.userComment;
+
+    return data;
   }
 }
 

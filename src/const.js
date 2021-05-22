@@ -6,4 +6,11 @@ const SortType = {
   RATING_DESC: 'rating-descending',
 };
 
-export {SortType, DESCRIPTION_LENGTH};
+const EmojiType = {
+  SMILE: 'smile',
+  SLEEPING: 'sleeping',
+  PUKE: 'puke',
+  ANGRY: 'angry',
+};
+
+export {SortType, DESCRIPTION_LENGTH, EmojiType};

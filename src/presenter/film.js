@@ -45,6 +45,7 @@ class Film {
     this._filmPopupComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmPopupComponent.setEmojiClickHandler();
+    this._filmPopupComponent.setUserCommentInputHandler();
 
     if (prevFilmComponent === null || prevPopupComponent === null) {
       render(this._filmListContainer, this._filmComponent, RenderPosition.BEFOREEND);
@@ -79,7 +80,7 @@ class Film {
   }
 
   _removePopup() {
-    this._filmPopupComponent.updateElement();
+    this._filmPopupComponent.reset(this._film);
     removePopup(this._filmPopupComponent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
 
