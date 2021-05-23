@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import he from 'he';
 import relativeTime  from 'dayjs/plugin/relativeTime';
 import {nanoid} from 'nanoid';
 import SmartView  from './smart.js';
@@ -23,7 +24,7 @@ const createFilmPopupTemplate = (film) => {
           <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">
         </span>
         <div>
-          <p class="film-details__comment-text">${comment.text}</p>
+          <p class="film-details__comment-text">${he.encode(comment.text)}</p>
           <p class="film-details__comment-info">
             <span class="film-details__comment-author">${comment.author}</span>
             <span class="film-details__comment-day">${dayjs(comment.date).fromNow()}</span>
