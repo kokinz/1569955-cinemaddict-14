@@ -1,5 +1,12 @@
 const DESCRIPTION_LENGTH = 140;
 
+const FilterType = {
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITES: 'favorites',
+};
+
 const SortType = {
   DEFAULT: 'default',
   DATE_DESC: 'date-descending',
@@ -30,4 +37,4 @@ const Mode = {
   CLOSED: 'CLOSED',
 };
 
-export {SortType, DESCRIPTION_LENGTH, EmojiType, UpdateType, Mode, UserAction};
+export {FilterType, SortType, DESCRIPTION_LENGTH, EmojiType, UpdateType, Mode, UserAction};
