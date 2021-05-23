@@ -155,8 +155,12 @@ class Film {
     );
   }
 
-  _enterKeyDownHandler() {
-    // отправка комментария на сервер
+  _enterKeyDownHandler(film) {
+    this._changeData(
+      UserAction.ADD_COMMENT,
+      UpdateType.PATCH,
+      film,
+    );
   }
 }
 

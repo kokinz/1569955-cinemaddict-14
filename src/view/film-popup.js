@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime  from 'dayjs/plugin/relativeTime';
+import {nanoid} from 'nanoid';
 import SmartView  from './smart.js';
 import {getTimeFormat, checkList} from '../utils/film.js';
 import {EmojiType} from '../const.js';
@@ -33,7 +34,7 @@ const createFilmPopupTemplate = (film) => {
     }).join(' ');
   };
 
-  return `<section class="film-details">
+  return `<section class="film-details" data-id="${film.id}">
     <form class="film-details__inner" action="" method="get">
       <div class="film-details__top-container">
         <div class="film-details__close">
@@ -217,23 +218,33 @@ class FilmPopup extends SmartView {
         comments,
       }, false);
 
-      this._callback.commentDelete(FilmPopup.parseDataToTask(this._data));
+      this._callback.commentDelete(this._data);
     }
   }
 
   _commentAddHandler(evt) {
     if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
-      // const newComment = {
-      //   text: this._data.userComment,
-      //   emoji: this._data.userEmoji,
-      // };
+      const newComment = {
+        id: nanoid(),
+        text: this._data.userComment,
+        emotion: this._data.userEmoji,
+        author: 'Sashka Popkin',
+        date: dayjs().format('YYYY/MM/DD hh:mm'),
+      };
 
-      this.updateData({
-        userEmoji: null,
-        userComment: null,
-      });
+      if (newComment.text !== null && newComment.emotion !== null) {
+        const comments = this._data.comments.slice();
 
-      // this._callback.commentAdd(newComment);
+        comments.push(newComment);
+
+        this.updateData({
+          comments,
+          userEmoji: null,
+          userComment: null,
+        }, false);
+
+        this._callback.commentAdd(FilmPopup.parseDataToFIlm(this._data));
+      }
     }
   }
 
@@ -298,7 +309,7 @@ class FilmPopup extends SmartView {
     );
   }
 
-  static parseDataToTask(data) {
+  static parseDataToFIlm(data) {
     data = Object.assign({}, data);
 
     delete data.userEmoji;
