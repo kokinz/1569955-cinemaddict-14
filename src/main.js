@@ -29,4 +29,4 @@ render(siteHeaderElement, new UserRankView(filters));
 render(siteMainElement, new SiteMenuView(filters), RenderPosition.AFTERBEGIN);
 render(footerStatistics, new MoviesCounterView(films));
 
-boardPresenter.init(films);
+boardPresenter.init();

@@ -45,6 +45,10 @@ const createElement = (template) => {
 };
 
 const remove = (component) => {
+  if (component === null) {
+    return;
+  }
+
   if (!(component instanceof Abstract)) {
     throw new Error('Can remove only components');
   }
@@ -62,6 +66,7 @@ const replace = (newChild, oldChild) => {
     newChild = newChild.getElement();
   }
 
+  const intElemScrollTop = oldChild.scrollTop;
   const parent = oldChild.parentElement;
 
   if (parent === null || oldChild === null || newChild === null) {
@@ -69,6 +74,8 @@ const replace = (newChild, oldChild) => {
   }
 
   parent.replaceChild(newChild, oldChild);
+
+  newChild.scrollTop = intElemScrollTop;
 };
 
 const renderPopup = (component) => {

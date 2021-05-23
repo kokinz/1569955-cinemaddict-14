@@ -109,6 +109,7 @@ const getCommentDate = (formatDate) => {
 
 const generateComment = () => {
   return {
+    id: nanoid(),
     text: getRandomText(),
     emotion: getRandomEmotion(),
     author: getRandomAutors(),
