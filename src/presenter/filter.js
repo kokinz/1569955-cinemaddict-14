@@ -52,23 +52,23 @@ class Filter {
     return [
       {
         type: FilterType.ALL,
-        name: 'All',
-        count: filter[FilterType.ALL](films),
+        name: 'All movies',
+        count: filter[FilterType.ALL](films).length,
       },
       {
         type: FilterType.WATCHLIST,
         name: 'Watchlist',
-        count: filter[FilterType.WATCHLIST](films),
+        count: filter[FilterType.WATCHLIST](films).length,
       },
       {
         type: FilterType.HISTORY,
         name: 'History',
-        count: filter[FilterType.HISTORY](films),
+        count: filter[FilterType.HISTORY](films).length,
       },
       {
         type: FilterType.FAVORITES,
         name: 'Favorites',
-        count: filter[FilterType.FAVORITES](films),
+        count: filter[FilterType.FAVORITES](films).length,
       },
     ];
   }

@@ -10,13 +10,15 @@ import FilmPresenter from './film.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
 import {sortFilmsByDate, sortFilmsByRating} from '../utils/film.js';
 import {SortType, UpdateType, UserAction} from '../const.js';
+import {filter} from '../utils/filters.js';
 
 const FILMS_COUNTER = 5;
 const EXTRA_FILMS_COUNTER = 2;
 
 class Board {
-  constructor (boardContainer, moviesModel) {
+  constructor (boardContainer, moviesModel, filterModel) {
     this._moviesModel = moviesModel;
+    this._filterModel = filterModel;
 
     this._boardContainer = boardContainer;
 
@@ -42,28 +44,25 @@ class Board {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._moviesModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
-    render(this._boardContainer, this._movieListComponent);
-    render(this._movieListComponent, this._topRatedComponent);
-    render(this._movieListComponent, this._mostCommentedComponent);
-
-    this._filmsContainer = this._movieListComponent.getContainer();
-    this._topRatedContainer = this._topRatedComponent.getContainer();
-    this._mostCommentedContainer = this._mostCommentedComponent.getContainer();
-
     this._renderBoard();
   }
 
   _getMovies() {
+    const filterType = this._filterModel.getFilter();
+    const films = this._moviesModel.getFilms();
+    const filtredFilms = filter[filterType](films);
+
     switch (this._currentSortType) {
       case SortType.DATE_DESC:
-        return sortFilmsByDate(this._moviesModel.getFilms().slice());
+        return sortFilmsByDate(filtredFilms);
       case SortType.RATING_DESC:
-        return sortFilmsByRating(this._moviesModel.getFilms().slice());
+        return sortFilmsByRating(filtredFilms);
     }
-    return this._moviesModel.getFilms();
+    return filtredFilms;
   }
 
   _handleModeChange() {
@@ -163,7 +162,8 @@ class Board {
   }
 
   _renderNoMovies() {
-    render(this._boardContainer, this._noMoviesComponent, RenderPosition.AFTERBEGIN);
+    this._clearBoard();
+    render(this._boardContainer, this._noMoviesComponent, RenderPosition.BEFOREEND);
   }
 
   _handleShowMoreButtonClick() {
@@ -210,6 +210,7 @@ class Board {
 
     remove(this._sortMenuComponent);
     remove(this._noMoviesComponent);
+    remove(this._movieListComponent);
     remove(this._showMoreComponent);
 
     if (resetRenderedFilmCount) {
@@ -232,7 +233,15 @@ class Board {
       return;
     }
 
+    render(this._boardContainer, this._movieListComponent);
+    render(this._movieListComponent, this._topRatedComponent);
+    render(this._movieListComponent, this._mostCommentedComponent);
+
     this._renderSortMenu();
+
+    this._filmsContainer = this._movieListComponent.getContainer();
+    this._topRatedContainer = this._topRatedComponent.getContainer();
+    this._mostCommentedContainer = this._mostCommentedComponent.getContainer();
 
     this._renderMovies(this._filmsContainer, films.slice(0, Math.min(filmsCount, this._renderedFilmsCount)));
     this._renderMovies(this._topRatedContainer, films.slice(0, EXTRA_FILMS_COUNTER));
