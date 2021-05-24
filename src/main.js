@@ -5,7 +5,7 @@ import {generateFilm} from './mock/film.js';
 import {render} from './utils/render.js';
 
 import BoardPresenter from './presenter/board.js';
-import FilterPresenter from './presenter/filter.js';
+import SiteMenuPresentor from './presenter/site-menu.js';
 
 import MoviesModel from './model/movies.js';
 import FilterModel from './model/filters.js';
@@ -50,7 +50,7 @@ render(siteHeaderElement, new UserRankView(filters));
 render(footerStatistics, new MoviesCounterView(films));
 
 const boardPresenter = new BoardPresenter(siteMainElement, moviesModel, filterModel);
-const filterPresenter = new FilterPresenter(siteMainElement, filterModel, moviesModel);
+const filterPresenter = new SiteMenuPresentor(siteMainElement, filterModel, moviesModel);
 
 filterPresenter.init();
 boardPresenter.init();

@@ -1,18 +1,19 @@
-import FilterView from '../view/site-menu.js';
+import SiteMenuView from '../view/site-menu.js';
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
 import {filter} from '../utils/filters.js';
 import {FilterType, UpdateType} from '../const.js';
 
-class Filter {
+class SiteMenu {
   constructor(filterContainer, filterModel, filmsModel) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
 
-    this._filterComponent = null;
+    this._siteMenuComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
+    this._handleStatsClick = this._handleStatsClick.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
@@ -20,17 +21,18 @@ class Filter {
 
   init() {
     const filters = this._getFilters();
-    const prevFilterComponent = this._filterComponent;
+    const prevFilterComponent = this._siteMenuComponent;
 
-    this._filterComponent = new FilterView(filters, this._filterModel.getFilter());
-    this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._siteMenuComponent = new SiteMenuView(filters, this._filterModel.getFilter());
+    this._siteMenuComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._siteMenuComponent.setStatsClickHandler(this._handleStatsClick);
 
     if (prevFilterComponent === null) {
-      render(this._filterContainer, this._filterComponent, RenderPosition.AFTERBEGIN);
+      render(this._filterContainer, this._siteMenuComponent, RenderPosition.AFTERBEGIN);
       return;
     }
 
-    replace(this._filterComponent, prevFilterComponent);
+    replace(this._siteMenuComponent, prevFilterComponent);
     remove(prevFilterComponent);
   }
 
@@ -44,6 +46,10 @@ class Filter {
     }
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+  }
+
+  _handleStatsClick(evt) {
+    console.log(evt.target);
   }
 
   _getFilters() {
@@ -74,4 +80,4 @@ class Filter {
   }
 }
 
-export {Filter as default};
+export {SiteMenu as default};
