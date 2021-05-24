@@ -89,6 +89,8 @@ class Film {
     this._filmPopupComponent.removeCommentAddHandler();
 
     this._mode = Mode.CLOSED;
+
+    this._changeData(UserAction.UPDATE_FILM, UpdateType.MINOR, Object.assign({}, this._film));
   }
 
   _escKeyDownHandler(evt) {
@@ -106,10 +108,14 @@ class Film {
     this._removePopup();
   }
 
+  _checkMode() {
+    return this._mode === Mode.OPENED ? UpdateType.PATCH : UpdateType.MINOR;
+  }
+
   _handleWatchlistClick() {
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      this._checkMode(),
       Object.assign(
         {},
         this._film,
@@ -123,7 +129,7 @@ class Film {
   _handleWatchedClick() {
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      this._checkMode(),
       Object.assign(
         {},
         this._film,
@@ -137,7 +143,7 @@ class Film {
   _handleFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR,
+      this._checkMode(),
       Object.assign(
         {},
         this._film,
