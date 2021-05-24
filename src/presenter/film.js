@@ -1,11 +1,9 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
-import {render, RenderPosition, remove, replace, removePopup, renderPopup} from '../utils/render.js';
 
-const Mode = {
-  OPENED: 'OPENED',
-  CLOSED: 'CLOSED',
-};
+import {render, RenderPosition, remove, replace, removePopup, renderPopup} from '../utils/render.js';
+import {UpdateType, UserAction, Mode} from '../const.js';
+
 
 class Film {
   constructor(filmListContainer, changeData, changeMode) {
@@ -23,6 +21,8 @@ class Film {
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
+    this._enterKeyDownHandler = this._enterKeyDownHandler.bind(this);
   }
 
   init(film) {
@@ -44,7 +44,11 @@ class Film {
     this._filmPopupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._filmPopupComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+
     this._filmPopupComponent.setEmojiClickHandler();
+    this._filmPopupComponent.setUserCommentInputHandler();
+    this._filmPopupComponent.setCommentDeleteHandler(this._handleDeleteCommentClick);
+    this._filmPopupComponent.setCommentAddHandler(this._enterKeyDownHandler);
 
     if (prevFilmComponent === null || prevPopupComponent === null) {
       render(this._filmListContainer, this._filmComponent, RenderPosition.BEFOREEND);
@@ -79,6 +83,7 @@ class Film {
   }
 
   _removePopup() {
+    this._filmPopupComponent.reset(this._film);
     removePopup(this._filmPopupComponent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
 
@@ -102,6 +107,8 @@ class Film {
 
   _handleWatchlistClick() {
     this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -114,6 +121,8 @@ class Film {
 
   _handleWatchedClick() {
     this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -126,6 +135,8 @@ class Film {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -133,6 +144,22 @@ class Film {
           isFavorite: !this._film.isFavorite,
         },
       ),
+    );
+  }
+
+  _handleDeleteCommentClick(film) {
+    this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      film,
+    );
+  }
+
+  _enterKeyDownHandler(film) {
+    this._changeData(
+      UserAction.ADD_COMMENT,
+      UpdateType.PATCH,
+      film,
     );
   }
 }
