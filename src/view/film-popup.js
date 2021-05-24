@@ -288,6 +288,10 @@ class FilmPopup extends SmartView {
     document.addEventListener('keydown', this._commentAddHandler);
   }
 
+  removeCommentAddHandler() {
+    document.removeEventListener('keydown', this._commentAddHandler);
+  }
+
   restoreHandlers() {
     this.setFilmPopupClickHandler(this._callback.popupClick);
     this.setWatchlistClickHandler(this._callback.watchlistClick);

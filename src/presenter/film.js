@@ -48,7 +48,6 @@ class Film {
     this._filmPopupComponent.setEmojiClickHandler();
     this._filmPopupComponent.setUserCommentInputHandler();
     this._filmPopupComponent.setCommentDeleteHandler(this._handleDeleteCommentClick);
-    this._filmPopupComponent.setCommentAddHandler(this._enterKeyDownHandler);
 
     if (prevFilmComponent === null || prevPopupComponent === null) {
       render(this._filmListContainer, this._filmComponent, RenderPosition.BEFOREEND);
@@ -75,6 +74,7 @@ class Film {
 
   _renderPopup() {
     document.addEventListener('keydown', this._escKeyDownHandler);
+    this._filmPopupComponent.setCommentAddHandler(this._enterKeyDownHandler);
 
     this._changeMode();
 
@@ -86,6 +86,7 @@ class Film {
     this._filmPopupComponent.reset(this._film);
     removePopup(this._filmPopupComponent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
+    this._filmPopupComponent.removeCommentAddHandler();
 
     this._mode = Mode.CLOSED;
   }
