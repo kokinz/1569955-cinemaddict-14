@@ -17,12 +17,11 @@ class Film {
 
     this._handleOpenClick = this._handleOpenClick.bind(this);
     this._handleCloseClick = this._handleCloseClick.bind(this);
-    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._KeyDownHandler = this._KeyDownHandler.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
-    this._enterKeyDownHandler = this._enterKeyDownHandler.bind(this);
   }
 
   init(film) {
@@ -73,8 +72,7 @@ class Film {
   }
 
   _renderPopup() {
-    document.addEventListener('keydown', this._escKeyDownHandler);
-    this._filmPopupComponent.setCommentAddHandler(this._enterKeyDownHandler);
+    document.addEventListener('keydown', this._KeyDownHandler);
 
     this._changeMode();
 
@@ -84,19 +82,34 @@ class Film {
 
   _removePopup() {
     this._filmPopupComponent.reset(this._film);
+
     removePopup(this._filmPopupComponent);
-    document.removeEventListener('keydown', this._escKeyDownHandler);
-    this._filmPopupComponent.removeCommentAddHandler();
+
+    document.removeEventListener('keydown', this._KeyDownHandler);
 
     this._mode = Mode.CLOSED;
 
     this._changeData(UserAction.UPDATE_FILM, UpdateType.MINOR, Object.assign({}, this._film));
   }
 
-  _escKeyDownHandler(evt) {
+  _KeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._removePopup();
+    }
+
+    if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
+      evt.preventDefault();
+
+      const film = this._filmPopupComponent.addComment();
+
+      if (film) {
+        this._changeData(
+          UserAction.ADD_COMMENT,
+          UpdateType.PATCH,
+          film,
+        );
+      }
     }
   }
 
@@ -157,14 +170,6 @@ class Film {
   _handleDeleteCommentClick(film) {
     this._changeData(
       UserAction.DELETE_COMMENT,
-      UpdateType.PATCH,
-      film,
-    );
-  }
-
-  _enterKeyDownHandler(film) {
-    this._changeData(
-      UserAction.ADD_COMMENT,
       UpdateType.PATCH,
       film,
     );
