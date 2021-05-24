@@ -1,9 +1,9 @@
 import UserRankView from './view/user-rank.js';
 import MoviesCounterView from './view/movies-counter.js';
-import StatisticsView from './view/stats.js';
+import StatsView from './view/stats.js';
 
 import {generateFilm} from './mock/film.js';
-import {render, remove} from './utils/render.js';
+import {render, RenderPosition, remove} from './utils/render.js';
 
 import BoardPresenter from './presenter/board.js';
 import SiteMenuPresentor from './presenter/site-menu.js';
@@ -52,21 +52,19 @@ const footerStatistics = siteFooterElement.querySelector('.footer__statistics');
 render(siteHeaderElement, new UserRankView(filters));
 render(footerStatistics, new MoviesCounterView(films));
 
-// let statisticsComponent = null;
+let statisticsComponent = null;
 
 const changeMenuSection = (menuItem) => {
   switch (menuItem) {
     case MenuItem.FILTER:
-      console.log('FilTEr');
-      // remove(statisticsComponent);
-      // filmListPresenter.destroy();
-      // filmListPresenter.init();
+      remove(statisticsComponent);
+      boardPresenter.destroy();
+      boardPresenter.init();
       break;
     case MenuItem.STATS:
-      console.log('STATS');
-      // filmListPresenter.destroy();
-      // statisticsComponent = new StatisticsView(filmsModel.getFilms());
-      // render(mainElement, statisticsComponent, RenderPosition.BEFOREEND);
+      boardPresenter.destroy();
+      statisticsComponent = new StatsView(moviesModel.getFilms());
+      render(siteMainElement, statisticsComponent, RenderPosition.BEFOREEND);
       break;
   }
 };

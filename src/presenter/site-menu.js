@@ -59,7 +59,10 @@ class SiteMenu {
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
 
-    this._changeMenuItem(MenuItem.FILTER);
+    if (this._currentMenuSection !== MenuItem.FILTER) {
+      this._changeMenuItem(MenuItem.FILTER);
+    }
+
     this._currentMenuSection = MenuItem.FILTER;
     this.init();
   }
