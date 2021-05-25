@@ -10,7 +10,6 @@ import SiteMenuPresentor from './presenter/site-menu.js';
 
 import MoviesModel from './model/movies.js';
 import FilterModel from './model/filters.js';
-
 import {MenuItem} from './const.js';
 
 const FILMS_COUNT = 18;
