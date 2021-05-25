@@ -153,7 +153,7 @@ class Stats extends SmartView {
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this._films, this._data.currentStatisticsFilter);
+    return createStatisticsTemplate(this._data.films, this._data.currentStatisticsFilter);
   }
 
   removeElement() {
