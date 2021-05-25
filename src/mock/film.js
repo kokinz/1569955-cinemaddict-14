@@ -141,6 +141,7 @@ const generateFilm = () => {
     isWatchlist: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
+    wathedDate: getFilmDate(2020, 2021),
   };
 };
 

@@ -37,4 +37,17 @@ const Mode = {
   CLOSED: 'CLOSED',
 };
 
-export {FilterType, SortType, DESCRIPTION_LENGTH, EmojiType, UpdateType, Mode, UserAction};
+const MenuItem = {
+  FILTER: 'FILTER',
+  STATS: 'STATS',
+};
+
+const StatsFilter = {
+  ALL_TIME: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};
+
+export {FilterType, SortType, DESCRIPTION_LENGTH, EmojiType, UpdateType, Mode, UserAction, MenuItem, StatsFilter};
