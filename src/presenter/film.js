@@ -6,15 +6,18 @@ import {UpdateType, UserAction, Mode} from '../const.js';
 
 
 class Film {
-  constructor(filmListContainer, changeData, changeMode) {
+  constructor(filmListContainer, changeData, changeMode, api, moviesModel) {
     this._filmListContainer = filmListContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._moviesModel = moviesModel;
+    this._api = api;
 
     this._filmComponent = null;
     this._filmPopupComponent = null;
     this._mode = Mode.CLOSED;
 
+    this._setComments = this._setComments.bind(this);
     this._handleOpenClick = this._handleOpenClick.bind(this);
     this._handleCloseClick = this._handleCloseClick.bind(this);
     this._KeyDownHandler = this._KeyDownHandler.bind(this);
@@ -71,7 +74,20 @@ class Film {
     }
   }
 
+  _setComments() {
+    // this._api.getComments(this._film)
+    //   .then((comments) => {
+    //     this._film.comments =
+    //     comments.map((comment) => this._moviesModel.adaptToClientComment(comment)));
+    //     this._film.comments = comments;
+
+    //     this._changeData(UserAction.UPDATE_FILM, UpdateType.PATCH, this._film);
+
+    //   });
+  }
+
   _renderPopup() {
+    this._setComments();
     document.addEventListener('keydown', this._KeyDownHandler);
 
     this._changeMode();

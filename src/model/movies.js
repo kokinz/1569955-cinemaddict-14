@@ -6,8 +6,18 @@ class Films extends Observer {
     this._films = [];
   }
 
-  setFilms(films) {
+  setFilms(updateType, films) {
     this._films = films.slice();
+
+    this._notify(updateType);
+  }
+
+  setComments(comments, film) {
+    this._film = film;
+    this._film.comments = comments.map((comment) => ({...comment}));
+    console.log(this._film);
+
+    this._notify(this._film);
   }
 
   getFilms() {
@@ -31,15 +41,87 @@ class Films extends Observer {
   }
 
   deleteComment(updateType, update) {
-    // console.log(update);
-
     this._notify(updateType, update);
   }
 
   addComment(updateType, update) {
-    // console.log('addComment');
-
     this._notify(updateType, update);
+  }
+
+  static adaptToClient(film) {
+    const adaptedFilm = Object.assign(
+      {},
+      film,
+      {
+        poster: film.film_info.poster,
+        title: film.film_info.title,
+        alternative_title: film.film_info.alternative_title,
+        rating: film.film_info.total_rating,
+        age_rating: film.film_info.age_rating,
+        director: film.film_info.director,
+        writers: film.film_info.writers,
+        actors: film.film_info.actors,
+        description: film.film_info.description,
+        date: film.film_info.release.date,
+        country: film.film_info.release.release_country,
+        runTime: film.film_info.runtime,
+        genres: film.film_info.genre,
+        isWatchlist: film.user_details.watchlist,
+        isWatched: film.user_details.already_watched,
+        isFavorite: film.user_details.favorite,
+        wathedDate: film.user_details.watching_date !== null ? film.user_details.watching_date : new Date().toISOString(),
+      },
+    );
+
+    delete adaptedFilm.film_info;
+    delete adaptedFilm.user_details;
+
+    return adaptedFilm;
+  }
+
+  static adaptToServer(film) {
+    const adaptFilm = {
+      id: film.id,
+      comments: film.comments,
+      film_info:
+        {
+          age_rating: film.age_rating,
+          alternative_title: film.alternative_title,
+          title: film.title,
+          genre: film.genres,
+          total_rating: film.rating,
+          runtime: film.runTime,
+          actors: film.actors,
+          writers: film.writers,
+          poster: film.poster,
+          director: film.director,
+          description: film.description,
+          release: {
+            date: film.date,
+            release_country: film.country,
+          },
+        },
+      user_details:
+        {
+          favorite: film.isFavorite,
+          already_watched: film.isWatched,
+          watchlist: film.isWatchlist,
+          watching_date: film.wathedDate,
+        },
+    };
+
+    console.log(adaptFilm);
+    return adaptFilm;
+  }
+
+  static adaptToClientComment(comment) {
+    return {
+      author: comment.author,
+      id: comment.id,
+      text: comment.comment,
+      emotion: comment.emotion,
+      date: comment.date,
+    };
   }
 }
 

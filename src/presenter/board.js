@@ -1,4 +1,5 @@
 import SortMenuView from '../view/sort-menu.js';
+import LoadingView from '../view/loading.js';
 import FilmListView from '../view/film-lists.js';
 import TopRatedView from '../view/top-rated-list.js';
 import MostCommentedView from '../view/most-commented-list.js';
@@ -16,14 +17,16 @@ const FILMS_COUNTER = 5;
 const EXTRA_FILMS_COUNTER = 2;
 
 class Board {
-  constructor (boardContainer, moviesModel, filterModel) {
+  constructor (boardContainer, moviesModel, filterModel, api) {
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
+    this._api = api;
 
     this._boardContainer = boardContainer;
 
     this._renderedFilmsCount = FILMS_COUNTER;
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
 
     this._filmPresenter = {};
     this._topRatedPresenter = {};
@@ -36,6 +39,7 @@ class Board {
     this._topRatedComponent = new TopRatedView();
     this._mostCommentedComponent = new MostCommentedView();
     this._noMoviesComponent = new NoFilmsView();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -87,7 +91,9 @@ class Board {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._moviesModel.updateFilm(updateType, update);
+        this._api.updateMovie(update).then((response) => {
+          this._moviesModel.updateFilm(updateType, response);
+        });
         break;
       case UserAction.ADD_COMMENT:
         this._moviesModel.addComment(updateType, update);
@@ -110,6 +116,12 @@ class Board {
         this._renderBoard();
         break;
       case UpdateType.MAJOR:
+        this._clearBoard({resetRenderedFilmCount: true, resetSortType: true});
+        this._renderBoard();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._clearBoard({resetRenderedFilmCount: true, resetSortType: true});
         this._renderBoard();
         break;
@@ -147,7 +159,7 @@ class Board {
   }
 
   _renderMovie(container, movie) {
-    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleModeChange);
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleModeChange, this._api, this._moviesModel);
 
     filmPresenter.init(movie);
 
@@ -171,6 +183,11 @@ class Board {
   _renderNoMovies() {
     this._clearBoard();
     render(this._boardContainer, this._noMoviesComponent, RenderPosition.BEFOREEND);
+  }
+
+  _renderLoading() {
+    this._clearBoard();
+    render(this._boardContainer, this._loadingComponent, RenderPosition.BEFOREEND);
   }
 
   _handleShowMoreButtonClick() {
@@ -232,6 +249,11 @@ class Board {
   }
 
   _renderBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const films = this._getMovies();
     const filmsCount = films.length;
 
