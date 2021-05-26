@@ -3,6 +3,7 @@ import Observer from '../utils/observer.js';
 class Films extends Observer {
   constructor() {
     super();
+    this._film = {};
     this._films = [];
   }
 
@@ -44,6 +45,21 @@ class Films extends Observer {
   }
 
   addComment(updateType, update) {
+    const index = this._films.findIndex((film) => film.id === update.id);
+
+    if (index === -1) {
+      throw new Error('Can\'t update unexisting film');
+    }
+
+    this._films = [
+      ...this._films.slice(0, index),
+      update,
+      ...this._films.slice(index + 1),
+    ];
+
+    console.log(update);
+    console.log(this._films[index]);
+
     this._notify(updateType, update);
   }
 
@@ -119,6 +135,43 @@ class Films extends Observer {
       text: comment.comment,
       emotion: comment.emotion,
       date: comment.date,
+    };
+  }
+
+  static adaptToClientCommentResponse(film) {
+    const adaptedFilm = {
+      id: film.movie.id,
+      comments: film.comments.slice().map((comment) => Films.adaptToClientComment(comment)),
+      poster: film.movie.film_info.poster,
+      title: film.movie.film_info.title,
+      alternative_title: film.movie.film_info.alternative_title,
+      rating: film.movie.film_info.total_rating,
+      age_rating: film.movie.film_info.age_rating,
+      director: film.movie.film_info.director,
+      writers: film.movie.film_info.writers,
+      actors: film.movie.film_info.actors,
+      description: film.movie.film_info.description,
+      date: film.movie.film_info.release.date,
+      country: film.movie.film_info.release.release_country,
+      runTime: film.movie.film_info.runtime,
+      genres: film.movie.film_info.genre,
+      isWatchlist: film.movie.user_details.watchlist,
+      isWatched: film.movie.user_details.already_watched,
+      isFavorite: film.movie.user_details.favorite,
+      wathedDate: film.movie.user_details.watching_date !== null ? film.movie.user_details.watching_date : new Date().toISOString(),
+    };
+
+    delete adaptedFilm.film_info;
+    delete adaptedFilm.user_details;
+    delete adaptedFilm.movie;
+
+    return adaptedFilm;
+  }
+
+  static adaptToServerComment(comment) {
+    return {
+      comment: comment.text,
+      emotion: comment.emotion,
     };
   }
 }

@@ -96,7 +96,9 @@ class Board {
         });
         break;
       case UserAction.ADD_COMMENT:
-        this._moviesModel.addComment(updateType, update);
+        this._api.addComment(update).then((response) => {
+          this._moviesModel.addComment(updateType, response);
+        });
         break;
       case UserAction.DELETE_COMMENT:
         this._moviesModel.deleteComment(updateType, update);
@@ -107,6 +109,8 @@ class Board {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
+        console.log(data);
+
         this._updateFilmPresenter(this._filmPresenter, data);
         this._updateFilmPresenter(this._topRatedPresenter, data);
         this._updateFilmPresenter(this._mostCommentedPresenter, data);
@@ -131,7 +135,6 @@ class Board {
   _updateFilmPresenter(presenters, data) {
     Object.values(presenters).forEach(() => {
       if (data.id in presenters) {
-        // console.log(presenters[data.id]);
         presenters[data.id].init(data);
       }
     });

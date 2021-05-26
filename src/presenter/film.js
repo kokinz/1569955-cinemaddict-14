@@ -140,14 +140,13 @@ class Film {
 
     if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
       evt.preventDefault();
+      const comment = this._filmPopupComponent.addComment();
 
-      const film = this._filmPopupComponent.addComment();
-
-      if (film) {
+      if (comment) {
         this._changeData(
           UserAction.ADD_COMMENT,
           UpdateType.PATCH,
-          film,
+          comment,
         );
       }
     }

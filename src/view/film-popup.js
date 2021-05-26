@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import he from 'he';
 import relativeTime  from 'dayjs/plugin/relativeTime';
-import {nanoid} from 'nanoid';
 import SmartView  from './smart.js';
 import {getTimeFormat, checkList} from '../utils/film.js';
 import {EmojiType} from '../const.js';
@@ -227,25 +226,13 @@ class FilmPopup extends SmartView {
 
   addComment() {
     const newComment = {
-      id: nanoid(),
+      filmId: this._data.id,
       text: this._data.userComment,
       emotion: this._data.userEmoji,
-      author: 'Sashka Popkin',
-      date: dayjs().format('YYYY/MM/DD hh:mm'),
     };
 
     if (newComment.text !== '' && newComment.text !== null && newComment.emotion !== null) {
-      const comments = this._data.comments.slice();
-
-      comments.push(newComment);
-
-      this.updateData({
-        comments,
-        userEmoji: null,
-        userComment: null,
-      }, false);
-
-      return FilmPopup.parseDataToFIlm(this._data);
+      return newComment;
     }
 
     return null;
