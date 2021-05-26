@@ -114,8 +114,6 @@ class Film {
   _removePopup() {
     this._film.comments = this._filmComments;
 
-    this._filmPopupComponent.reset(this._film);
-
     removePopup(this._filmPopupComponent);
 
     document.removeEventListener('keydown', this._KeyDownHandler);

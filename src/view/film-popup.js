@@ -11,6 +11,8 @@ dayjs.extend(relativeTime);
 const createFilmPopupTemplate = (film) => {
   const {title, alternative_title, rating, age_rating, director, writers, actors, date, runTime, country, genres, poster, description, comments, isWatchlist, isWatched, isFavorite} = film;
 
+  const commentsCount = comments.length;
+
   const renderGenres = () => {
     return genres.map((genre) => {
       return `<span class="film-details__genre">${genre}</span>`;
@@ -109,7 +111,7 @@ const createFilmPopupTemplate = (film) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments ? comments.lenght : ''}</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
 
           ${comments ? `<ul class="film-details__comments-list">${renderComments()}</ul>` : '<p>Loading</p>'}
 
