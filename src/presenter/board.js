@@ -131,6 +131,7 @@ class Board {
   _updateFilmPresenter(presenters, data) {
     Object.values(presenters).forEach(() => {
       if (data.id in presenters) {
+        // console.log(presenters[data.id]);
         presenters[data.id].init(data);
       }
     });

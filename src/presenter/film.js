@@ -15,6 +15,8 @@ class Film {
 
     this._filmComponent = null;
     this._filmPopupComponent = null;
+    this._filmCommentsClient = null;
+    this._filmCommentsServer = null;
     this._mode = Mode.CLOSED;
 
     this._setComments = this._setComments.bind(this);
@@ -29,6 +31,14 @@ class Film {
 
   init(film) {
     this._film = film;
+
+    if (this._filmCommentsClient !== null) {
+      this._film.comments = this._filmCommentsClient;
+    }
+
+    if (this._filmCommentsServer === null) {
+      this._filmCommentsServer = this._film.comments;
+    }
 
     const prevFilmComponent = this._filmComponent;
     const prevPopupComponent = this._filmPopupComponent;
@@ -49,11 +59,18 @@ class Film {
 
     this._filmPopupComponent.setEmojiClickHandler();
     this._filmPopupComponent.setUserCommentInputHandler();
-    this._filmPopupComponent.setCommentDeleteHandler(this._handleDeleteCommentClick);
+
+    if (this._filmCommentsClient) {
+      this._filmPopupComponent.setCommentDeleteHandler(this._handleDeleteCommentClick);
+    }
 
     if (prevFilmComponent === null || prevPopupComponent === null) {
       render(this._filmListContainer, this._filmComponent, RenderPosition.BEFOREEND);
       return;
+    }
+
+    if (prevPopupComponent !== null) {
+      renderPopup(this._filmPopupComponent);
     }
 
     replace(this._filmComponent, prevFilmComponent);
@@ -75,19 +92,17 @@ class Film {
   }
 
   _setComments() {
-    // this._api.getComments(this._film)
-    //   .then((comments) => {
-    //     this._film.comments =
-    //     comments.map((comment) => this._moviesModel.adaptToClientComment(comment)));
-    //     this._film.comments = comments;
+    this._api.getComments(this._film)
+      .then((comments) => {
+        this._filmCommentsClient = comments;
 
-    //     this._changeData(UserAction.UPDATE_FILM, UpdateType.PATCH, this._film);
-
-    //   });
+        this.init(this._film);
+      });
   }
 
   _renderPopup() {
     this._setComments();
+
     document.addEventListener('keydown', this._KeyDownHandler);
 
     this._changeMode();
@@ -97,6 +112,8 @@ class Film {
   }
 
   _removePopup() {
+    this._film.comments = this._filmComments;
+
     this._filmPopupComponent.reset(this._film);
 
     removePopup(this._filmPopupComponent);
@@ -105,7 +122,16 @@ class Film {
 
     this._mode = Mode.CLOSED;
 
-    this._changeData(UserAction.UPDATE_FILM, UpdateType.MINOR, Object.assign({}, this._film));
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      Object.assign(
+        {},
+        this._film,
+        {
+          comments: this._filmCommentsServer,
+        },
+      ));
   }
 
   _KeyDownHandler(evt) {
@@ -150,6 +176,7 @@ class Film {
         this._film,
         {
           isWatchlist: !this._film.isWatchlist,
+          comments: this._filmCommentsServer,
         },
       ),
     );
@@ -164,6 +191,7 @@ class Film {
         this._film,
         {
           isWatched: !this._film.isWatched,
+          comments: this._filmCommentsServer,
         },
       ),
     );
@@ -178,6 +206,7 @@ class Film {
         this._film,
         {
           isFavorite: !this._film.isFavorite,
+          comments: this._filmCommentsServer,
         },
       ),
     );
