@@ -11,6 +11,7 @@ import SiteMenuPresentor from './presenter/site-menu.js';
 import MoviesModel from './model/movies.js';
 import FilterModel from './model/filters.js';
 
+
 import {MenuItem, UpdateType} from './const.js';
 
 import Api from './api.js';
