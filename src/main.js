@@ -13,7 +13,6 @@ import SiteMenuPresentor from './presenter/site-menu.js';
 import MoviesModel from './model/movies.js';
 import FilterModel from './model/filters.js';
 
-
 import Api from './api.js';
 
 const AUTHORIZATION = 'Basic re48aasl34cl2js83';
