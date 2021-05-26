@@ -206,6 +206,8 @@ class Stats extends SmartView {
         });
         break;
     }
+
+    this.getElement().scrollIntoView();
   }
 
   _setFilterChangeHandler() {

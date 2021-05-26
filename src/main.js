@@ -1,7 +1,9 @@
 import MoviesCounterView from './view/movies-counter.js';
 import StatsView from './view/stats.js';
 
-import {generateFilm} from './mock/film.js';
+import {MenuItem, UpdateType} from './const.js';
+
+// import {generateFilm} from './mock/film.js';
 import {render, RenderPosition, remove} from './utils/render.js';
 
 import UserProfilePresenter from './presenter/profile.js';
@@ -10,23 +12,21 @@ import SiteMenuPresentor from './presenter/site-menu.js';
 
 import MoviesModel from './model/movies.js';
 import FilterModel from './model/filters.js';
-import {MenuItem} from './const.js';
 
-const FILMS_COUNT = 18;
+import Api from './api.js';
 
-const films = new Array(FILMS_COUNT).fill().map(generateFilm);
-
-const moviesModel = new MoviesModel();
-moviesModel.setFilms(films);
-
-const filterModel = new FilterModel();
+const AUTHORIZATION = 'Basic re48aasl34cl2js83';
+const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 const footerStatistics = siteFooterElement.querySelector('.footer__statistics');
 
-render(footerStatistics, new MoviesCounterView(moviesModel.getFilms()));
+const api = new Api(END_POINT, AUTHORIZATION);
+
+const moviesModel = new MoviesModel();
+const filterModel = new FilterModel();
 
 let statisticsComponent = null;
 
@@ -46,9 +46,19 @@ const changeMenuSection = (menuItem) => {
 };
 
 const userProfilePresenter = new UserProfilePresenter(siteHeaderElement, moviesModel);
-const boardPresenter = new BoardPresenter(siteMainElement, moviesModel, filterModel);
+const boardPresenter = new BoardPresenter(siteMainElement, moviesModel, filterModel, api);
 const siteMenuPresentor = new SiteMenuPresentor(siteMainElement, filterModel, moviesModel, changeMenuSection);
+
+render(footerStatistics, new MoviesCounterView(moviesModel.getFilms()));
 
 userProfilePresenter.init();
 siteMenuPresentor.init();
 boardPresenter.init();
+
+api.getMovies()
+  .then((movies) => {
+    moviesModel.setFilms(UpdateType.INIT, movies);
+  })
+  .catch(() => {
+    moviesModel.setFilms(UpdateType.INIT, []);
+  });
