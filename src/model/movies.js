@@ -15,7 +15,6 @@ class Films extends Observer {
   setComments(comments, film) {
     this._film = film;
     this._film.comments = comments.map((comment) => ({...comment}));
-    console.log(this._film);
 
     this._notify(this._film);
   }
@@ -110,7 +109,6 @@ class Films extends Observer {
         },
     };
 
-    console.log(adaptFilm);
     return adaptFilm;
   }
 
