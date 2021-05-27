@@ -101,7 +101,9 @@ class Board {
         });
         break;
       case UserAction.DELETE_COMMENT:
-        this._moviesModel.deleteComment(updateType, update);
+        this._api.deleteComment(update).then(() => {
+          this._moviesModel.deleteComment(updateType, update);
+        });
         break;
     }
   }

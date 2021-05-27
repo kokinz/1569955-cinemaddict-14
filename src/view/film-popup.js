@@ -214,13 +214,21 @@ class FilmPopup extends SmartView {
 
     if (evt.target.matches('.film-details__comment-delete')) {
       const id = evt.target.closest('.film-details__comment').dataset.id;
+
       const comments = this._data.comments.filter((item) => item.id !== id);
 
       this.updateData({
         comments,
-      }, false);
+      }, true);
 
-      this._callback.commentDelete(this._data);
+      const film = Object.assign({}, this._data);
+
+      const data = {
+        id,
+        film,
+      };
+
+      this._callback.commentDelete(data);
     }
   }
 

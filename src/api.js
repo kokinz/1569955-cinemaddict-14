@@ -57,9 +57,9 @@ class Api {
       });
   }
 
-  deleteComment(id) {
+  deleteComment(data) {
     return this._load({
-      url: `/comments/${id}`,
+      url: `/comments/${data.id}`,
       method: Method.DELETE,
     });
   }

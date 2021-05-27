@@ -40,8 +40,17 @@ class Films extends Observer {
     this._notify(updateType, update);
   }
 
-  deleteComment(updateType, update) {
-    this._notify(updateType, update);
+  deleteComment(updateType, data) {
+    const id = data.id;
+    this._film = data.film;
+
+    this._films = [
+      ...this._films.slice(0, id),
+      this._film,
+      ...this._films.slice(id + 1),
+    ];
+
+    this._notify(updateType, this._film);
   }
 
   addComment(updateType, update) {

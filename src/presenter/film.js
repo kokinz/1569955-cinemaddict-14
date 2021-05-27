@@ -227,11 +227,11 @@ class Film {
     );
   }
 
-  _handleDeleteCommentClick(film) {
+  _handleDeleteCommentClick(data) {
     this._changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
-      film,
+      data,
     );
   }
 }
