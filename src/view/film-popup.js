@@ -20,6 +20,10 @@ const createFilmPopupTemplate = (film) => {
 
   const renderComments = () => {
     return comments.map((comment) => {
+      if (!comment.text || !comment.emotion || !comment.date || !comment.author) {
+        return;
+      }
+
       return `<li class="film-details__comment" data-id="${comment.id}">
         <span class="film-details__comment-emoji">
           ${comment.emotion ? `<img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">` : ''}
@@ -299,6 +303,9 @@ class FilmPopup extends SmartView {
       {
         userEmoji: null,
         userComment: null,
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
       },
     );
   }
@@ -308,6 +315,9 @@ class FilmPopup extends SmartView {
 
     delete data.userEmoji;
     delete data.userComment;
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
 
     return data;
   }
