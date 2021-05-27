@@ -109,8 +109,6 @@ class Board {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        console.log(data);
-
         this._updateFilmPresenter(this._filmPresenter, data);
         this._updateFilmPresenter(this._topRatedPresenter, data);
         this._updateFilmPresenter(this._mostCommentedPresenter, data);

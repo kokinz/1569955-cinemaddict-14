@@ -45,22 +45,17 @@ class Films extends Observer {
   }
 
   addComment(updateType, update) {
-    const index = this._films.findIndex((film) => film.id === update.id);
+    const index = this._films.findIndex((film) => film.id === update.film.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting film');
     }
 
-    this._films = [
-      ...this._films.slice(0, index),
-      update,
-      ...this._films.slice(index + 1),
-    ];
+    this._film = update.film;
+    this._comments = update.comments;
+    this._film.comments = this._comments.slice();
 
-    console.log(update);
-    console.log(this._films[index]);
-
-    this._notify(updateType, update);
+    this._notify(updateType, this._film);
   }
 
   static adaptToClient(film) {
@@ -138,35 +133,35 @@ class Films extends Observer {
     };
   }
 
-  static adaptToClientCommentResponse(film) {
-    const adaptedFilm = {
-      id: film.movie.id,
-      comments: film.comments.slice().map((comment) => Films.adaptToClientComment(comment)),
-      poster: film.movie.film_info.poster,
-      title: film.movie.film_info.title,
-      alternative_title: film.movie.film_info.alternative_title,
-      rating: film.movie.film_info.total_rating,
-      age_rating: film.movie.film_info.age_rating,
-      director: film.movie.film_info.director,
-      writers: film.movie.film_info.writers,
-      actors: film.movie.film_info.actors,
-      description: film.movie.film_info.description,
-      date: film.movie.film_info.release.date,
-      country: film.movie.film_info.release.release_country,
-      runTime: film.movie.film_info.runtime,
-      genres: film.movie.film_info.genre,
-      isWatchlist: film.movie.user_details.watchlist,
-      isWatched: film.movie.user_details.already_watched,
-      isFavorite: film.movie.user_details.favorite,
-      wathedDate: film.movie.user_details.watching_date !== null ? film.movie.user_details.watching_date : new Date().toISOString(),
-    };
+  // static adaptToClientCommentResponse(film) {
+  //   const adaptedFilm = {
+  //     id: film.movie.id,
+  //     comments: film.comments.slice().map((comment) => Films.adaptToClientComment(comment)),
+  //     poster: film.movie.film_info.poster,
+  //     title: film.movie.film_info.title,
+  //     alternative_title: film.movie.film_info.alternative_title,
+  //     rating: film.movie.film_info.total_rating,
+  //     age_rating: film.movie.film_info.age_rating,
+  //     director: film.movie.film_info.director,
+  //     writers: film.movie.film_info.writers,
+  //     actors: film.movie.film_info.actors,
+  //     description: film.movie.film_info.description,
+  //     date: film.movie.film_info.release.date,
+  //     country: film.movie.film_info.release.release_country,
+  //     runTime: film.movie.film_info.runtime,
+  //     genres: film.movie.film_info.genre,
+  //     isWatchlist: film.movie.user_details.watchlist,
+  //     isWatched: film.movie.user_details.already_watched,
+  //     isFavorite: film.movie.user_details.favorite,
+  //     wathedDate: film.movie.user_details.watching_date !== null ? film.movie.user_details.watching_date : new Date().toISOString(),
+  //   };
 
-    delete adaptedFilm.film_info;
-    delete adaptedFilm.user_details;
-    delete adaptedFilm.movie;
+  //   delete adaptedFilm.film_info;
+  //   delete adaptedFilm.user_details;
+  //   delete adaptedFilm.movie;
 
-    return adaptedFilm;
-  }
+  //   return adaptedFilm;
+  // }
 
   static adaptToServerComment(comment) {
     return {

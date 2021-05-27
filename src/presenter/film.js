@@ -17,6 +17,7 @@ class Film {
     this._filmPopupComponent = null;
     this._filmCommentsClient = null;
     this._filmCommentsServer = null;
+    this._rerender = false;
     this._mode = Mode.CLOSED;
 
     this._setComments = this._setComments.bind(this);
@@ -32,13 +33,44 @@ class Film {
   init(film) {
     this._film = film;
 
-    if (this._filmCommentsClient !== null) {
-      this._film.comments = this._filmCommentsClient;
-    }
-
     if (this._filmCommentsServer === null) {
       this._filmCommentsServer = this._film.comments;
     }
+
+    if (this._filmCommentsServer.length !== this._film.comments.length) {
+      this._filmCommentsServer = this._film.comments.slice().map((comment) => comment.id);
+    }
+
+    if (this._rerender) {
+      this._film.comments = this._filmCommentsClient;
+    }
+
+    if (this._mode === Mode.OPENED) {
+      this._filmCommentsClient = this._film.comments.slice().map((comment) => comment);
+    }
+
+    // if (this._mode === Mode.OPENED) {
+    //   return;
+    // }
+
+    // if (this._filmCommentsClient.length < this._film.comments.length) {
+    //   this._filmCommentsClient.push(this._film.comments[this._film.comments.length - 1].id);
+    // }
+
+
+
+    // if (this._filmCommentsServer.length > this._film.comments.length) {
+    //   //Нужно найти комментарий который был удален (ID) и удалить его из _filmCommentsServer
+
+    //   this._filmCommentsServer.push(this._film.comments[this._film.comments.length - 1].id);
+    // }
+
+
+    console.log(this._filmCommentsServer);
+    console.log(this._filmCommentsClient);
+    console.log(this._film.comments);
+
+
 
     const prevFilmComponent = this._filmComponent;
     const prevPopupComponent = this._filmPopupComponent;
@@ -91,10 +123,15 @@ class Film {
     }
   }
 
+  _checkMode() {
+    return this._mode === Mode.OPENED ? true : false;
+  }
+
   _setComments() {
     this._api.getComments(this._film)
       .then((comments) => {
         this._filmCommentsClient = comments;
+        this._film.comments = comments;
 
         this.init(this._film);
       });
@@ -120,6 +157,8 @@ class Film {
 
     this._mode = Mode.CLOSED;
 
+    const comments = this._filmCommentsServer.slice();
+
     this._changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
@@ -127,7 +166,7 @@ class Film {
         {},
         this._film,
         {
-          comments: this._filmCommentsServer,
+          comments: comments,
         },
       ));
   }
@@ -141,7 +180,7 @@ class Film {
     if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
       evt.preventDefault();
       const comment = this._filmPopupComponent.addComment();
-
+//add comment
       if (comment) {
         this._changeData(
           UserAction.ADD_COMMENT,
@@ -160,14 +199,12 @@ class Film {
     this._removePopup();
   }
 
-  _checkMode() {
-    return this._mode === Mode.OPENED ? UpdateType.PATCH : UpdateType.MINOR;
-  }
-
   _handleWatchlistClick() {
+    this._rerender = true;
+
     this._changeData(
       UserAction.UPDATE_FILM,
-      this._checkMode(),
+      this._checkMode() ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -180,9 +217,11 @@ class Film {
   }
 
   _handleWatchedClick() {
+    this._rerender = true;
+
     this._changeData(
       UserAction.UPDATE_FILM,
-      this._checkMode(),
+      this._checkMode() ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -195,9 +234,11 @@ class Film {
   }
 
   _handleFavoriteClick() {
+    this._rerender = true;
+
     this._changeData(
       UserAction.UPDATE_FILM,
-      this._checkMode(),
+      this._checkMode() ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
