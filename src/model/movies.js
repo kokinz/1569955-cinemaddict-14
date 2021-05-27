@@ -51,6 +51,12 @@ class Films extends Observer {
       throw new Error('Can\'t update unexisting film');
     }
 
+    this._films = [
+      ...this._films.slice(0, index),
+      update.film,
+      ...this._films.slice(index + 1),
+    ];
+
     this._film = update.film;
     this._comments = update.comments;
     this._film.comments = this._comments.slice();
@@ -132,36 +138,6 @@ class Films extends Observer {
       date: comment.date,
     };
   }
-
-  // static adaptToClientCommentResponse(film) {
-  //   const adaptedFilm = {
-  //     id: film.movie.id,
-  //     comments: film.comments.slice().map((comment) => Films.adaptToClientComment(comment)),
-  //     poster: film.movie.film_info.poster,
-  //     title: film.movie.film_info.title,
-  //     alternative_title: film.movie.film_info.alternative_title,
-  //     rating: film.movie.film_info.total_rating,
-  //     age_rating: film.movie.film_info.age_rating,
-  //     director: film.movie.film_info.director,
-  //     writers: film.movie.film_info.writers,
-  //     actors: film.movie.film_info.actors,
-  //     description: film.movie.film_info.description,
-  //     date: film.movie.film_info.release.date,
-  //     country: film.movie.film_info.release.release_country,
-  //     runTime: film.movie.film_info.runtime,
-  //     genres: film.movie.film_info.genre,
-  //     isWatchlist: film.movie.user_details.watchlist,
-  //     isWatched: film.movie.user_details.already_watched,
-  //     isFavorite: film.movie.user_details.favorite,
-  //     wathedDate: film.movie.user_details.watching_date !== null ? film.movie.user_details.watching_date : new Date().toISOString(),
-  //   };
-
-  //   delete adaptedFilm.film_info;
-  //   delete adaptedFilm.user_details;
-  //   delete adaptedFilm.movie;
-
-  //   return adaptedFilm;
-  // }
 
   static adaptToServerComment(comment) {
     return {

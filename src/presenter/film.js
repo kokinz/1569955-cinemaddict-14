@@ -49,29 +49,6 @@ class Film {
       this._filmCommentsClient = this._film.comments.slice().map((comment) => comment);
     }
 
-    // if (this._mode === Mode.OPENED) {
-    //   return;
-    // }
-
-    // if (this._filmCommentsClient.length < this._film.comments.length) {
-    //   this._filmCommentsClient.push(this._film.comments[this._film.comments.length - 1].id);
-    // }
-
-
-
-    // if (this._filmCommentsServer.length > this._film.comments.length) {
-    //   //Нужно найти комментарий который был удален (ID) и удалить его из _filmCommentsServer
-
-    //   this._filmCommentsServer.push(this._film.comments[this._film.comments.length - 1].id);
-    // }
-
-
-    console.log(this._filmCommentsServer);
-    console.log(this._filmCommentsClient);
-    console.log(this._film.comments);
-
-
-
     const prevFilmComponent = this._filmComponent;
     const prevPopupComponent = this._filmPopupComponent;
 
@@ -180,7 +157,7 @@ class Film {
     if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
       evt.preventDefault();
       const comment = this._filmPopupComponent.addComment();
-//add comment
+
       if (comment) {
         this._changeData(
           UserAction.ADD_COMMENT,
