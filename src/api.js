@@ -3,6 +3,7 @@ import MoviesModel from './model/movies.js';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
   DELETE: 'DELETE',
 };
 
@@ -40,9 +41,25 @@ class Api {
       .then(MoviesModel.adaptToClient);
   }
 
-  deleteComment(id) {
+  addComment(comment) {
     return this._load({
-      url: `/comments/${id}`,
+      url: `comments/${comment.filmId}`,
+      method: Method.POST,
+      body: JSON.stringify(MoviesModel.adaptToServerComment(comment)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON)
+      .then((response) => {
+        return {
+          comments: response.comments.map(MoviesModel.adaptToClientComment),
+          film: MoviesModel.adaptToClient(response.movie),
+        };
+      });
+  }
+
+  deleteComment(data) {
+    return this._load({
+      url: `/comments/${data.id}`,
       method: Method.DELETE,
     });
   }

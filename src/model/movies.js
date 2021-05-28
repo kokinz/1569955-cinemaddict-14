@@ -3,6 +3,7 @@ import Observer from '../utils/observer.js';
 class Films extends Observer {
   constructor() {
     super();
+    this._film = {};
     this._films = [];
   }
 
@@ -39,12 +40,37 @@ class Films extends Observer {
     this._notify(updateType, update);
   }
 
-  deleteComment(updateType, update) {
-    this._notify(updateType, update);
+  deleteComment(updateType, data) {
+    const id = data.id;
+    this._film = data.film;
+
+    this._films = [
+      ...this._films.slice(0, id),
+      this._film,
+      ...this._films.slice(id + 1),
+    ];
+
+    this._notify(updateType, this._film);
   }
 
   addComment(updateType, update) {
-    this._notify(updateType, update);
+    const index = this._films.findIndex((film) => film.id === update.film.id);
+
+    if (index === -1) {
+      throw new Error('Can\'t update unexisting film');
+    }
+
+    this._films = [
+      ...this._films.slice(0, index),
+      update.film,
+      ...this._films.slice(index + 1),
+    ];
+
+    this._film = update.film;
+    this._comments = update.comments;
+    this._film.comments = this._comments.slice();
+
+    this._notify(updateType, this._film);
   }
 
   static adaptToClient(film) {
@@ -119,6 +145,13 @@ class Films extends Observer {
       text: comment.comment,
       emotion: comment.emotion,
       date: comment.date,
+    };
+  }
+
+  static adaptToServerComment(comment) {
+    return {
+      comment: comment.text,
+      emotion: comment.emotion,
     };
   }
 }

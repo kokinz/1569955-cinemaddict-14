@@ -17,6 +17,8 @@ class Film {
     this._filmPopupComponent = null;
     this._filmCommentsClient = null;
     this._filmCommentsServer = null;
+    this._rerender = false;
+    this._isSending = false;
     this._mode = Mode.CLOSED;
 
     this._setComments = this._setComments.bind(this);
@@ -32,12 +34,20 @@ class Film {
   init(film) {
     this._film = film;
 
-    if (this._filmCommentsClient !== null) {
+    if (this._filmCommentsServer === null) {
+      this._filmCommentsServer = this._film.comments;
+    }
+
+    if (this._filmCommentsServer.length !== this._film.comments.length) {
+      this._filmCommentsServer = this._film.comments.slice().map((comment) => comment.id);
+    }
+
+    if (this._rerender) {
       this._film.comments = this._filmCommentsClient;
     }
 
-    if (this._filmCommentsServer === null) {
-      this._filmCommentsServer = this._film.comments;
+    if (this._mode === Mode.OPENED) {
+      this._filmCommentsClient = this._film.comments.slice().map((comment) => comment);
     }
 
     const prevFilmComponent = this._filmComponent;
@@ -80,6 +90,16 @@ class Film {
     remove(prevPopupComponent);
   }
 
+  resetPopupView() {
+    this._filmPopupComponent.shake(() => {
+      this._filmPopupComponent.updateData({
+        isSaving: false,
+        isDeleting: false,
+      }, false);
+      this._filmPopupComponent.updateElement();
+    });
+  }
+
   destroy() {
     remove(this._filmComponent);
     remove(this._filmPopupComponent);
@@ -91,10 +111,15 @@ class Film {
     }
   }
 
+  _checkMode() {
+    return this._mode === Mode.OPENED ? true : false;
+  }
+
   _setComments() {
     this._api.getComments(this._film)
       .then((comments) => {
         this._filmCommentsClient = comments;
+        this._film.comments = comments;
 
         this.init(this._film);
       });
@@ -114,13 +139,13 @@ class Film {
   _removePopup() {
     this._film.comments = this._filmComments;
 
-    this._filmPopupComponent.reset(this._film);
-
     removePopup(this._filmPopupComponent);
 
     document.removeEventListener('keydown', this._KeyDownHandler);
 
     this._mode = Mode.CLOSED;
+
+    const comments = this._filmCommentsServer.slice();
 
     this._changeData(
       UserAction.UPDATE_FILM,
@@ -129,7 +154,7 @@ class Film {
         {},
         this._film,
         {
-          comments: this._filmCommentsServer,
+          comments: comments,
         },
       ));
   }
@@ -143,13 +168,13 @@ class Film {
     if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
       evt.preventDefault();
 
-      const film = this._filmPopupComponent.addComment();
+      const comment = this._filmPopupComponent.addComment();
 
-      if (film) {
+      if (comment) {
         this._changeData(
           UserAction.ADD_COMMENT,
           UpdateType.PATCH,
-          film,
+          comment,
         );
       }
     }
@@ -163,14 +188,12 @@ class Film {
     this._removePopup();
   }
 
-  _checkMode() {
-    return this._mode === Mode.OPENED ? UpdateType.PATCH : UpdateType.MINOR;
-  }
-
   _handleWatchlistClick() {
+    this._rerender = true;
+
     this._changeData(
       UserAction.UPDATE_FILM,
-      this._checkMode(),
+      this._checkMode() ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -183,9 +206,11 @@ class Film {
   }
 
   _handleWatchedClick() {
+    this._rerender = true;
+
     this._changeData(
       UserAction.UPDATE_FILM,
-      this._checkMode(),
+      this._checkMode() ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -198,9 +223,11 @@ class Film {
   }
 
   _handleFavoriteClick() {
+    this._rerender = true;
+
     this._changeData(
       UserAction.UPDATE_FILM,
-      this._checkMode(),
+      this._checkMode() ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -212,12 +239,16 @@ class Film {
     );
   }
 
-  _handleDeleteCommentClick(film) {
+  _handleDeleteCommentClick(data) {
     this._changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
-      film,
+      data,
     );
+  }
+
+  setKeyDownHendler() {
+    document.addEventListener('keydown', this._KeyDownHandler);
   }
 }
 

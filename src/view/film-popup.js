@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import he from 'he';
 import relativeTime  from 'dayjs/plugin/relativeTime';
-import {nanoid} from 'nanoid';
 import SmartView  from './smart.js';
 import {getTimeFormat, checkList} from '../utils/film.js';
 import {EmojiType} from '../const.js';
@@ -11,6 +10,8 @@ dayjs.extend(relativeTime);
 const createFilmPopupTemplate = (film) => {
   const {title, alternative_title, rating, age_rating, director, writers, actors, date, runTime, country, genres, poster, description, comments, isWatchlist, isWatched, isFavorite} = film;
 
+  const commentsCount = comments.length;
+
   const renderGenres = () => {
     return genres.map((genre) => {
       return `<span class="film-details__genre">${genre}</span>`;
@@ -19,6 +20,10 @@ const createFilmPopupTemplate = (film) => {
 
   const renderComments = () => {
     return comments.map((comment) => {
+      if (!comment.text || !comment.emotion || !comment.date || !comment.author) {
+        return;
+      }
+
       return `<li class="film-details__comment" data-id="${comment.id}">
         <span class="film-details__comment-emoji">
           ${comment.emotion ? `<img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">` : ''}
@@ -28,7 +33,7 @@ const createFilmPopupTemplate = (film) => {
           <p class="film-details__comment-info">
             <span class="film-details__comment-author">${comment.author ? comment.author : ''}</span>
             <span class="film-details__comment-day">${comment.date ? dayjs(comment.date).fromNow() : ''}</span>
-            <button class="film-details__comment-delete">Delete</button>
+            <button class="film-details__comment-delete"${film.isDeleting ? 'disabled' : ''}>${film.isDeleting ? 'deleting...' : 'delete'}</button>
           </p>
         </div>
       </li>`;
@@ -109,7 +114,7 @@ const createFilmPopupTemplate = (film) => {
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments ? comments.lenght : ''}</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
 
           ${comments ? `<ul class="film-details__comments-list">${renderComments()}</ul>` : '<p>Loading</p>'}
 
@@ -117,7 +122,7 @@ const createFilmPopupTemplate = (film) => {
             <div class="film-details__add-emoji-label">${film.userEmoji ? `<img src="images/emoji/${film.userEmoji}.png" width="55" height="55" alt="emoji-${film.userEmoji}">` : ' '}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${film.userComment ? he.encode(film.userComment) : ''}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${film.isSaving ? 'disabled' : ''}>${film.userComment ? he.encode(film.userComment) : ''}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -162,6 +167,10 @@ class FilmPopup extends SmartView {
     this._commentDeleteHandler = this._commentDeleteHandler.bind(this);
     this.addComment = this.addComment.bind(this);
   }
+
+  // get(commentId) {
+  //   return this.getElement().querySelector(`[id = "${commentId}"`).querySelector('.film-details__comment-delete');
+  // }
 
   _emojiClickHandler(evt) {
     evt.preventDefault();
@@ -213,37 +222,41 @@ class FilmPopup extends SmartView {
 
     if (evt.target.matches('.film-details__comment-delete')) {
       const id = evt.target.closest('.film-details__comment').dataset.id;
+
       const comments = this._data.comments.filter((item) => item.id !== id);
 
       this.updateData({
-        comments,
+        isDeleting: true,
       }, false);
 
-      this._callback.commentDelete(this._data);
+      const film = Object.assign({}, FilmPopup.parseDataToFIlm(this._data));
+
+      film.comments = comments.slice();
+
+      const data = {
+        id,
+        film,
+      };
+
+      this._callback.commentDelete(data);
     }
   }
 
   addComment() {
     const newComment = {
-      id: nanoid(),
+      filmId: this._data.id,
       text: this._data.userComment,
       emotion: this._data.userEmoji,
-      author: 'Sashka Popkin',
-      date: dayjs().format('YYYY/MM/DD hh:mm'),
     };
 
-    if (newComment.text !== '' && newComment.text !== null && newComment.emotion !== null) {
-      const comments = this._data.comments.slice();
-
-      comments.push(newComment);
+    if (newComment.text !== '' && newComment.text !== null && newComment.emotion !== null && !this._data.isSaving) {
 
       this.updateData({
-        comments,
-        userEmoji: null,
-        userComment: null,
+        isSaving: true,
+        prevUserComment: this._data.userComment,
       }, false);
 
-      return FilmPopup.parseDataToFIlm(this._data);
+      return newComment;
     }
 
     return null;
@@ -302,6 +315,8 @@ class FilmPopup extends SmartView {
       {
         userEmoji: null,
         userComment: null,
+        isSaving: false,
+        isDeleting: false,
       },
     );
   }
@@ -311,6 +326,8 @@ class FilmPopup extends SmartView {
 
     delete data.userEmoji;
     delete data.userComment;
+    delete data.isSaving;
+    delete data.isDeleting;
 
     return data;
   }
