@@ -249,9 +249,11 @@ class FilmPopup extends SmartView {
       emotion: this._data.userEmoji,
     };
 
-    if (newComment.text !== '' && newComment.text !== null && newComment.emotion !== null) {
+    if (newComment.text !== '' && newComment.text !== null && newComment.emotion !== null && !this._data.isSaving) {
+
       this.updateData({
         isSaving: true,
+        prevUserComment: this._data.userComment,
       }, false);
 
       return newComment;

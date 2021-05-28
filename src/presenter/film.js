@@ -18,6 +18,7 @@ class Film {
     this._filmCommentsClient = null;
     this._filmCommentsServer = null;
     this._rerender = false;
+    this._isSending = false;
     this._mode = Mode.CLOSED;
 
     this._setComments = this._setComments.bind(this);
@@ -90,12 +91,13 @@ class Film {
   }
 
   resetPopupView() {
-    this._filmPopupComponent.shake();
-    this._filmPopupComponent.updateData({
-      isSaving: false,
-      isDeleting: false,
-    }, false);
-    this._filmPopupComponent.updateElement();
+    this._filmPopupComponent.shake(() => {
+      this._filmPopupComponent.updateData({
+        isSaving: false,
+        isDeleting: false,
+      }, false);
+      this._filmPopupComponent.updateElement();
+    });
   }
 
   destroy() {
@@ -165,8 +167,6 @@ class Film {
 
     if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
       evt.preventDefault();
-
-      document.removeEventListener('keydown', this._KeyDownHandler);
 
       const comment = this._filmPopupComponent.addComment();
 

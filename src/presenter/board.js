@@ -100,7 +100,6 @@ class Board {
       case UserAction.ADD_COMMENT:
         this._api.addComment(update).then((response) => {
           this._moviesModel.addComment(updateType, response);
-          this._filmPresenter[update.filmId].setKeyDownHendler();
         }).catch(() => {
           this._filmPresenter[update.filmId].resetPopupView();
         });
