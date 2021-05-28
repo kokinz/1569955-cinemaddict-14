@@ -89,6 +89,15 @@ class Film {
     remove(prevPopupComponent);
   }
 
+  resetPopupView() {
+    this._filmPopupComponent.shake();
+    this._filmPopupComponent.updateData({
+      isSaving: false,
+      isDeleting: false,
+    }, false);
+    this._filmPopupComponent.updateElement();
+  }
+
   destroy() {
     remove(this._filmComponent);
     remove(this._filmPopupComponent);
@@ -156,6 +165,9 @@ class Film {
 
     if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
       evt.preventDefault();
+
+      document.removeEventListener('keydown', this._KeyDownHandler);
+
       const comment = this._filmPopupComponent.addComment();
 
       if (comment) {
@@ -233,6 +245,10 @@ class Film {
       UpdateType.PATCH,
       data,
     );
+  }
+
+  setKeyDownHendler() {
+    document.addEventListener('keydown', this._KeyDownHandler);
   }
 }
 

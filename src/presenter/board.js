@@ -93,16 +93,23 @@ class Board {
       case UserAction.UPDATE_FILM:
         this._api.updateMovie(update).then((response) => {
           this._moviesModel.updateFilm(updateType, response);
+        }).catch(() => {
+          this._filmPresenter[update.id].resetPopupView();
         });
         break;
       case UserAction.ADD_COMMENT:
         this._api.addComment(update).then((response) => {
           this._moviesModel.addComment(updateType, response);
+          this._filmPresenter[update.filmId].setKeyDownHendler();
+        }).catch(() => {
+          this._filmPresenter[update.filmId].resetPopupView();
         });
         break;
       case UserAction.DELETE_COMMENT:
         this._api.deleteComment(update).then(() => {
           this._moviesModel.deleteComment(updateType, update);
+        }).catch(() => {
+          this._filmPresenter[update.film.id].resetPopupView();
         });
         break;
     }

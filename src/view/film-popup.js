@@ -33,7 +33,7 @@ const createFilmPopupTemplate = (film) => {
           <p class="film-details__comment-info">
             <span class="film-details__comment-author">${comment.author ? comment.author : ''}</span>
             <span class="film-details__comment-day">${comment.date ? dayjs(comment.date).fromNow() : ''}</span>
-            <button class="film-details__comment-delete">Delete</button>
+            <button class="film-details__comment-delete"${film.isDeleting ? 'disabled' : ''}>${film.isDeleting ? 'deleting...' : 'delete'}</button>
           </p>
         </div>
       </li>`;
@@ -122,7 +122,7 @@ const createFilmPopupTemplate = (film) => {
             <div class="film-details__add-emoji-label">${film.userEmoji ? `<img src="images/emoji/${film.userEmoji}.png" width="55" height="55" alt="emoji-${film.userEmoji}">` : ' '}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${film.userComment ? he.encode(film.userComment) : ''}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${film.isSaving ? 'disabled' : ''}>${film.userComment ? he.encode(film.userComment) : ''}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -167,6 +167,10 @@ class FilmPopup extends SmartView {
     this._commentDeleteHandler = this._commentDeleteHandler.bind(this);
     this.addComment = this.addComment.bind(this);
   }
+
+  // get(commentId) {
+  //   return this.getElement().querySelector(`[id = "${commentId}"`).querySelector('.film-details__comment-delete');
+  // }
 
   _emojiClickHandler(evt) {
     evt.preventDefault();
@@ -222,10 +226,12 @@ class FilmPopup extends SmartView {
       const comments = this._data.comments.filter((item) => item.id !== id);
 
       this.updateData({
-        comments,
-      }, true);
+        isDeleting: true,
+      }, false);
 
-      const film = Object.assign({}, this._data);
+      const film = Object.assign({}, FilmPopup.parseDataToFIlm(this._data));
+
+      film.comments = comments.slice();
 
       const data = {
         id,
@@ -244,6 +250,10 @@ class FilmPopup extends SmartView {
     };
 
     if (newComment.text !== '' && newComment.text !== null && newComment.emotion !== null) {
+      this.updateData({
+        isSaving: true,
+      }, false);
+
       return newComment;
     }
 
@@ -303,7 +313,6 @@ class FilmPopup extends SmartView {
       {
         userEmoji: null,
         userComment: null,
-        isDisabled: false,
         isSaving: false,
         isDeleting: false,
       },
@@ -315,7 +324,6 @@ class FilmPopup extends SmartView {
 
     delete data.userEmoji;
     delete data.userComment;
-    delete data.isDisabled;
     delete data.isSaving;
     delete data.isDeleting;
 
