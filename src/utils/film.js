@@ -19,4 +19,18 @@ const sortFilmsByRating = (films) => films.slice().sort((filmA, filmB) => {
   return filmB.rating - filmA.rating;
 });
 
-export {getTimeFormat, checkList, sortFilmsByDate, sortFilmsByRating};
+const getCommentsId = (comments) => {
+  if (comments.length) {
+    return comments.slice().map((comment) => {
+      if (!comment.text || !comment.emotion || !comment.date || !comment.author) {
+        return comment;
+      }
+
+      return comment.id;
+    });
+  }
+
+  return [];
+};
+
+export {getTimeFormat, checkList, sortFilmsByDate, sortFilmsByRating, getCommentsId};

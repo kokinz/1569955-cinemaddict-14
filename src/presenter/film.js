@@ -2,6 +2,7 @@ import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
 
 import {render, RenderPosition, remove, replace, removePopup, renderPopup} from '../utils/render.js';
+import {getCommentsId} from '../utils/film.js';
 import {UpdateType, UserAction, Mode} from '../const.js';
 
 
@@ -15,10 +16,9 @@ class Film {
 
     this._filmComponent = null;
     this._filmPopupComponent = null;
+
     this._filmCommentsClient = null;
-    this._filmCommentsServer = null;
-    this._rerender = false;
-    this._isSending = false;
+
     this._mode = Mode.CLOSED;
 
     this._setComments = this._setComments.bind(this);
@@ -34,20 +34,12 @@ class Film {
   init(film) {
     this._film = film;
 
-    if (this._filmCommentsServer === null) {
-      this._filmCommentsServer = this._film.comments;
+    if (this._filmCommentsClient === null || this._filmCommentsClient.length !== this._film.comments.length) {
+      this._filmCommentsClient = this._film.comments.slice();
     }
 
-    if (this._filmCommentsServer.length !== this._film.comments.length) {
-      this._filmCommentsServer = this._film.comments.slice().map((comment) => comment.id);
-    }
-
-    if (this._rerender) {
-      this._film.comments = this._filmCommentsClient;
-    }
-
-    if (this._mode === Mode.OPENED) {
-      this._filmCommentsClient = this._film.comments.slice().map((comment) => comment);
+    if (this._filmCommentsClient !== null) {
+      this._film.comments = this._filmCommentsClient.slice();
     }
 
     const prevFilmComponent = this._filmComponent;
@@ -70,9 +62,7 @@ class Film {
     this._filmPopupComponent.setEmojiClickHandler();
     this._filmPopupComponent.setUserCommentInputHandler();
 
-    if (this._filmCommentsClient) {
-      this._filmPopupComponent.setCommentDeleteHandler(this._handleDeleteCommentClick);
-    }
+    this._filmPopupComponent.setCommentDeleteHandler(this._handleDeleteCommentClick);
 
     if (prevFilmComponent === null || prevPopupComponent === null) {
       render(this._filmListContainer, this._filmComponent, RenderPosition.BEFOREEND);
@@ -137,18 +127,16 @@ class Film {
   }
 
   _removePopup() {
-    this._film.comments = this._filmComments;
-
     removePopup(this._filmPopupComponent);
 
     document.removeEventListener('keydown', this._KeyDownHandler);
 
     this._mode = Mode.CLOSED;
 
-    const comments = this._filmCommentsServer.slice();
+    const comments = getCommentsId(this._film.comments).slice();
 
     this._changeData(
-      UserAction.UPDATE_FILM,
+      UserAction.RENDER,
       UpdateType.MINOR,
       Object.assign(
         {},
@@ -189,7 +177,6 @@ class Film {
   }
 
   _handleWatchlistClick() {
-    this._rerender = true;
 
     this._changeData(
       UserAction.UPDATE_FILM,
@@ -199,14 +186,13 @@ class Film {
         this._film,
         {
           isWatchlist: !this._film.isWatchlist,
-          comments: this._filmCommentsServer,
+          comments: getCommentsId(this._film.comments),
         },
       ),
     );
   }
 
   _handleWatchedClick() {
-    this._rerender = true;
 
     this._changeData(
       UserAction.UPDATE_FILM,
@@ -216,14 +202,13 @@ class Film {
         this._film,
         {
           isWatched: !this._film.isWatched,
-          comments: this._filmCommentsServer,
+          comments: getCommentsId(this._film.comments),
         },
       ),
     );
   }
 
   _handleFavoriteClick() {
-    this._rerender = true;
 
     this._changeData(
       UserAction.UPDATE_FILM,
@@ -233,7 +218,7 @@ class Film {
         this._film,
         {
           isFavorite: !this._film.isFavorite,
-          comments: this._filmCommentsServer,
+          comments: getCommentsId(this._film.comments),
         },
       ),
     );
