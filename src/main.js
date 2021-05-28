@@ -49,8 +49,6 @@ const userProfilePresenter = new UserProfilePresenter(siteHeaderElement, moviesM
 const boardPresenter = new BoardPresenter(siteMainElement, moviesModel, filterModel, api);
 const siteMenuPresentor = new SiteMenuPresentor(siteMainElement, filterModel, moviesModel, changeMenuSection);
 
-render(footerStatistics, new MoviesCounterView(moviesModel.getFilms()));
-
 userProfilePresenter.init();
 siteMenuPresentor.init();
 boardPresenter.init();
@@ -58,6 +56,7 @@ boardPresenter.init();
 api.getMovies()
   .then((movies) => {
     moviesModel.setFilms(UpdateType.INIT, movies);
+    render(footerStatistics, new MoviesCounterView(moviesModel.getFilms()));
   })
   .catch(() => {
     moviesModel.setFilms(UpdateType.INIT, []);

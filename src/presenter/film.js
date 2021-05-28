@@ -97,7 +97,11 @@ class Film {
 
   resetView() {
     if (this._mode !== Mode.CLOSED) {
-      this._removePopup();
+      removePopup(this._filmPopupComponent);
+
+      document.removeEventListener('keydown', this._KeyDownHandler);
+
+      this._mode = Mode.CLOSED;
     }
   }
 
@@ -116,11 +120,10 @@ class Film {
   }
 
   _renderPopup() {
+    this._changeMode();
     this._setComments();
 
     document.addEventListener('keydown', this._KeyDownHandler);
-
-    this._changeMode();
 
     renderPopup(this._filmPopupComponent);
     this._mode = Mode.OPENED;
