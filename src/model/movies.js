@@ -80,9 +80,9 @@ class Films extends Observer {
       {
         poster: film.film_info.poster,
         title: film.film_info.title,
-        alternative_title: film.film_info.alternative_title,
+        alternativeTitle: film.film_info.alternative_title,
         rating: film.film_info.total_rating,
-        age_rating: film.film_info.age_rating,
+        ageRating: film.film_info.age_rating,
         director: film.film_info.director,
         writers: film.film_info.writers,
         actors: film.film_info.actors,
@@ -110,8 +110,8 @@ class Films extends Observer {
       comments: film.comments,
       film_info:
         {
-          age_rating: film.age_rating,
-          alternative_title: film.alternative_title,
+          age_rating: film.ageRating,
+          alternative_title: film.alternativeTitle,
           title: film.title,
           genre: film.genres,
           total_rating: film.rating,

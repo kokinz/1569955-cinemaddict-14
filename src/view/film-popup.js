@@ -9,7 +9,7 @@ import {isOnline} from '../utils/common.js';
 dayjs.extend(relativeTime);
 
 const createFilmPopupTemplate = (film) => {
-  const {title, alternative_title, rating, age_rating, director, writers, actors, date, runTime, country, genres, poster, description, comments, isWatchlist, isWatched, isFavorite} = film;
+  const {title, alternativeTitle, rating, ageRating, director, writers, actors, date, runTime, country, genres, poster, description, comments, isWatchlist, isWatched, isFavorite} = film;
 
   const commentsCount = comments.length;
 
@@ -52,14 +52,14 @@ const createFilmPopupTemplate = (film) => {
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="${poster}" alt="">
 
-            <p class="film-details__age">${age_rating}+</p>
+            <p class="film-details__age">${ageRating}+</p>
           </div>
 
           <div class="film-details__info">
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
                 <h3 class="film-details__title">${title}</h3>
-                <p class="film-details__title-original">Original: ${alternative_title}</p>
+                <p class="film-details__title-original">Original: ${alternativeTitle}</p>
               </div>
 
               <div class="film-details__rating">
