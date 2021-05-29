@@ -356,6 +356,7 @@ class FilmPopup extends SmartView {
     this.updateData({
       isSaving: true,
     }, false);
+    this.shake();
   }
 }
 

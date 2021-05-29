@@ -124,7 +124,8 @@ class Board {
         });
         break;
       case UserAction.RENDER:
-        this._moviesModel.updateFilm(updateType, update);
+        this._clearBoard();
+        this._renderBoard();
     }
   }
 
