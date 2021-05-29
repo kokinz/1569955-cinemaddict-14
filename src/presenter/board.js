@@ -9,7 +9,7 @@ import ShowMoreView from '../view/show-more-button.js';
 import FilmPresenter from './film.js';
 
 import {render, remove, RenderPosition} from '../utils/render.js';
-import {sortFilmsByDate, sortFilmsByRating} from '../utils/film.js';
+import {sortFilmsByDate, sortFilmsByRating, sortFilmsByComments} from '../utils/film.js';
 import {SortType, UpdateType, UserAction} from '../const.js';
 import {filter} from '../utils/filters.js';
 
@@ -74,6 +74,18 @@ class Board {
         return sortFilmsByRating(filtredFilms);
     }
     return filtredFilms;
+  }
+
+  _getTopRatedMovies() {
+    const films = this._moviesModel.getFilms();
+
+    return sortFilmsByRating(films);
+  }
+
+  _getMostCommentedMovies() {
+    const films = this._moviesModel.getFilms();
+
+    return sortFilmsByComments(films);
   }
 
   _handleModeChange() {
@@ -189,6 +201,9 @@ class Board {
   }
 
   _renderMovies(container, movies) {
+    if (container === null) {
+      return;
+    }
     movies.forEach((movie) => this._renderMovie(container, movie));
   }
 
@@ -266,17 +281,41 @@ class Board {
       return;
     }
 
-    const films = this._getMovies();
-    const filmsCount = films.length;
+    const filteredFilms = this._getMovies();
+    const topRatedFilms = this._getTopRatedMovies();
+    const mostCommentedFilms = this._getMostCommentedMovies();
+
+    const filmsCount = filteredFilms.length;
 
     if (filmsCount <= 0) {
       this._renderNoMovies();
+
+      if (!topRatedFilms.every((film) => film.rating === 0)) {
+        render(this._noMoviesComponent, this._topRatedComponent);
+      }
+
+      if (!mostCommentedFilms.every((film) => film.comments.length === 0)) {
+        render(this._noMoviesComponent, this._mostCommentedComponent);
+      }
+
+      this._topRatedContainer = this._topRatedComponent.getContainer();
+      this._mostCommentedContainer = this._mostCommentedComponent.getContainer();
+
+      this._renderMovies(this._topRatedContainer, topRatedFilms.slice(0, EXTRA_FILMS_COUNTER));
+      this._renderMovies(this._mostCommentedContainer, mostCommentedFilms.slice(0, EXTRA_FILMS_COUNTER));
+
       return;
     }
 
     render(this._boardContainer, this._movieListComponent);
-    render(this._movieListComponent, this._topRatedComponent);
-    render(this._movieListComponent, this._mostCommentedComponent);
+
+    if (topRatedFilms.every((film) => film.rating !== 0)) {
+      render(this._movieListComponent, this._topRatedComponent);
+    }
+
+    if (!mostCommentedFilms.every((film) => film.comments.length === 0)) {
+      render(this._movieListComponent, this._mostCommentedComponent);
+    }
 
     this._renderSortMenu();
 
@@ -284,9 +323,10 @@ class Board {
     this._topRatedContainer = this._topRatedComponent.getContainer();
     this._mostCommentedContainer = this._mostCommentedComponent.getContainer();
 
-    this._renderMovies(this._filmsContainer, films.slice(0, Math.min(filmsCount, this._renderedFilmsCount)));
-    this._renderMovies(this._topRatedContainer, films.slice(0, EXTRA_FILMS_COUNTER));
-    this._renderMovies(this._mostCommentedContainer, films.slice(0, EXTRA_FILMS_COUNTER));
+    this._renderMovies(this._filmsContainer, filteredFilms.slice(0, Math.min(filmsCount, this._renderedFilmsCount)));
+
+    this._renderMovies(this._topRatedContainer, topRatedFilms.slice(0, EXTRA_FILMS_COUNTER));
+    this._renderMovies(this._mostCommentedContainer, mostCommentedFilms.slice(0, EXTRA_FILMS_COUNTER));
 
     if (filmsCount > this._renderedFilmsCount) {
       this._renderShowMoreButton();

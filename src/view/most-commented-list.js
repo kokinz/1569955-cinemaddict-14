@@ -15,7 +15,7 @@ class MostCommentedList extends AbstractView {
 
   getContainer() {
     if (this._element === null) {
-      throw new Error('Need to create element.');
+      return null;
     }
 
     return this._element.querySelector('.films-list__container');
