@@ -8,7 +8,7 @@ import {toast} from './utils/toast.js';
 
 import UserProfilePresenter from './presenter/profile.js';
 import BoardPresenter from './presenter/board.js';
-import SiteMenuPresentor from './presenter/site-menu.js';
+import SiteMenuPresenter from './presenter/site-menu.js';
 
 import MoviesModel from './model/movies.js';
 import FilterModel from './model/filters.js';
@@ -54,10 +54,10 @@ const changeMenuSection = (menuItem) => {
 
 const userProfilePresenter = new UserProfilePresenter(siteHeaderElement, moviesModel);
 const boardPresenter = new BoardPresenter(siteMainElement, moviesModel, filterModel, apiWithProvider);
-const siteMenuPresentor = new SiteMenuPresentor(siteMainElement, filterModel, moviesModel, changeMenuSection);
+const siteMenuPresenter = new SiteMenuPresenter(siteMainElement, filterModel, moviesModel, changeMenuSection);
 
 userProfilePresenter.init();
-siteMenuPresentor.init();
+siteMenuPresenter.init();
 boardPresenter.init();
 
 apiWithProvider.getMovies()
