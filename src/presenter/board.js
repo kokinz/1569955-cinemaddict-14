@@ -292,17 +292,15 @@ class Board {
 
       if (!topRatedFilms.every((film) => film.rating === 0)) {
         render(this._noMoviesComponent, this._topRatedComponent);
+        this._topRatedContainer = this._topRatedComponent.getContainer();
+        this._renderMovies(this._topRatedContainer, topRatedFilms.slice(0, EXTRA_FILMS_COUNTER));
       }
 
       if (!mostCommentedFilms.every((film) => film.comments.length === 0)) {
         render(this._noMoviesComponent, this._mostCommentedComponent);
+        this._mostCommentedContainer = this._mostCommentedComponent.getContainer();
+        this._renderMovies(this._mostCommentedContainer, mostCommentedFilms.slice(0, EXTRA_FILMS_COUNTER));
       }
-
-      this._topRatedContainer = this._topRatedComponent.getContainer();
-      this._mostCommentedContainer = this._mostCommentedComponent.getContainer();
-
-      this._renderMovies(this._topRatedContainer, topRatedFilms.slice(0, EXTRA_FILMS_COUNTER));
-      this._renderMovies(this._mostCommentedContainer, mostCommentedFilms.slice(0, EXTRA_FILMS_COUNTER));
 
       return;
     }
@@ -311,22 +309,22 @@ class Board {
 
     if (topRatedFilms.every((film) => film.rating !== 0)) {
       render(this._movieListComponent, this._topRatedComponent);
+      this._topRatedContainer = this._topRatedComponent.getContainer();
+      this._renderMovies(this._topRatedContainer, topRatedFilms.slice(0, EXTRA_FILMS_COUNTER));
     }
 
     if (!mostCommentedFilms.every((film) => film.comments.length === 0)) {
       render(this._movieListComponent, this._mostCommentedComponent);
+      this._mostCommentedContainer = this._mostCommentedComponent.getContainer();
+      this._renderMovies(this._mostCommentedContainer, mostCommentedFilms.slice(0, EXTRA_FILMS_COUNTER));
     }
 
     this._renderSortMenu();
 
     this._filmsContainer = this._movieListComponent.getContainer();
-    this._topRatedContainer = this._topRatedComponent.getContainer();
-    this._mostCommentedContainer = this._mostCommentedComponent.getContainer();
 
     this._renderMovies(this._filmsContainer, filteredFilms.slice(0, Math.min(filmsCount, this._renderedFilmsCount)));
 
-    this._renderMovies(this._topRatedContainer, topRatedFilms.slice(0, EXTRA_FILMS_COUNTER));
-    this._renderMovies(this._mostCommentedContainer, mostCommentedFilms.slice(0, EXTRA_FILMS_COUNTER));
 
     if (filmsCount > this._renderedFilmsCount) {
       this._renderShowMoreButton();
