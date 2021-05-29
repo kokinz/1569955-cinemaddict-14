@@ -4,6 +4,8 @@ import relativeTime  from 'dayjs/plugin/relativeTime';
 import SmartView  from './smart.js';
 import {getTimeFormat, checkList} from '../utils/film.js';
 import {EmojiType} from '../const.js';
+import {isOnline} from '../utils/common.js';
+import { toast } from '../utils/toast.js';
 
 dayjs.extend(relativeTime);
 
@@ -21,7 +23,7 @@ const createFilmPopupTemplate = (film) => {
   const renderComments = () => {
     return comments.map((comment) => {
       if (!comment.text || !comment.emotion || !comment.date || !comment.author) {
-        return;
+        return '<li class="film-details__comment" data-id="${comment.id}"><h2>Loading...</h2></li>';
       }
 
       return `<li class="film-details__comment" data-id="${comment.id}">
@@ -168,10 +170,6 @@ class FilmPopup extends SmartView {
     this.addComment = this.addComment.bind(this);
   }
 
-  // get(commentId) {
-  //   return this.getElement().querySelector(`[id = "${commentId}"`).querySelector('.film-details__comment-delete');
-  // }
-
   _emojiClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
@@ -181,6 +179,7 @@ class FilmPopup extends SmartView {
 
   _userCommentInputHandler(evt) {
     evt.preventDefault();
+
     this.updateData({
       userComment: evt.target.value,
     }, true);
@@ -330,6 +329,12 @@ class FilmPopup extends SmartView {
     delete data.isDeleting;
 
     return data;
+  }
+
+  blockForm() {
+    this.updateData({
+      isSaving: true,
+    }, false);
   }
 }
 

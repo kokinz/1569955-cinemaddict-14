@@ -3,6 +3,9 @@ import FilmPopupView from '../view/film-popup.js';
 
 import {render, RenderPosition, remove, replace, removePopup, renderPopup} from '../utils/render.js';
 import {getCommentsId} from '../utils/film.js';
+import {isOnline} from '../utils/common.js';
+import {toast} from '../utils/toast';
+
 import {UpdateType, UserAction, Mode} from '../const.js';
 
 
@@ -127,6 +130,15 @@ class Film {
 
     renderPopup(this._filmPopupComponent);
     this._mode = Mode.OPENED;
+
+    if (!isOnline()) {
+      toast('You can\'t create comment OFFLINE');
+      this._filmPopupComponent.shake();
+      this._filmPopupComponent.updateData({
+        isSaving: true,
+      }, false);
+      return;
+    }
   }
 
   _removePopup() {
@@ -158,6 +170,13 @@ class Film {
 
     if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
       evt.preventDefault();
+
+      if (!isOnline()) {
+        toast('You can\'t create comment OFFLINE');
+        this._filmPopupComponent.shake();
+        this._filmPopupComponent.blockForm();
+        return;
+      }
 
       const comment = this._filmPopupComponent.addComment();
 
@@ -228,6 +247,12 @@ class Film {
   }
 
   _handleDeleteCommentClick(data) {
+    if (!isOnline()) {
+      toast('You can\'t delete comment OFFLINE');
+      this._filmPopupComponent.shake();
+      return;
+    }
+
     this._changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
