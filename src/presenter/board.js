@@ -111,6 +111,8 @@ class Board {
           this._filmPresenter[update.film.id].resetPopupView();
         });
         break;
+      case UserAction.RENDER:
+        this._moviesModel.updateFilm(updateType, update);
     }
   }
 

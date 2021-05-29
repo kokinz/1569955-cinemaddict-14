@@ -86,4 +86,8 @@ const filterByDate = (films, filterType) => {
   });
 };
 
-export {updateItem, getRank, getTotalDuration, getGenresStats, getTopGenre, filterByDate};
+const isOnline = () => {
+  return window.navigator.onLine;
+};
+
+export {updateItem, getRank, getTotalDuration, getGenresStats, getTopGenre, filterByDate, isOnline};
