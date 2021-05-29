@@ -106,32 +106,32 @@ class Films extends Observer {
 
   static adaptToServer(film) {
     const adaptFilm = {
-      id: film.id,
-      comments: film.comments,
-      film_info:
+      'id': film.id,
+      'comments': film.comments,
+      'film_info':
         {
-          age_rating: film.ageRating,
-          alternative_title: film.alternativeTitle,
-          title: film.title,
-          genre: film.genres,
-          total_rating: film.rating,
-          runtime: film.runTime,
-          actors: film.actors,
-          writers: film.writers,
-          poster: film.poster,
-          director: film.director,
-          description: film.description,
-          release: {
-            date: film.date,
-            release_country: film.country,
+          'age_rating': film.ageRating,
+          'alternative_title': film.alternativeTitle,
+          'title': film.title,
+          'genre': film.genres,
+          'total_rating': film.rating,
+          'runtime': film.runTime,
+          'actors': film.actors,
+          'writers': film.writers,
+          'poster': film.poster,
+          'director': film.director,
+          'description': film.description,
+          'release': {
+            'date': film.date,
+            'release_country': film.country,
           },
         },
-      user_details:
+      'user_details':
         {
-          favorite: film.isFavorite,
-          already_watched: film.isWatched,
-          watchlist: film.isWatchlist,
-          watching_date: film.wathedDate,
+          'favorite': film.isFavorite,
+          'already_watched': film.isWatched,
+          'watchlist': film.isWatchlist,
+          'watching_date': film.wathedDate,
         },
     };
 
