@@ -132,10 +132,10 @@ class Film {
     this._mode = Mode.OPENED;
 
     if (!isOnline()) {
-      toast('You can\'t create comment OFFLINE');
+      toast('You can\'t CREATE or DELETE comment OFFLINE');
       this._filmPopupComponent.shake();
       this._filmPopupComponent.updateData({
-        isSaving: true,
+        isDisable: true,
       }, false);
       return;
     }
@@ -172,8 +172,7 @@ class Film {
       evt.preventDefault();
 
       if (!isOnline()) {
-        toast('You can\'t create comment OFFLINE');
-        this._filmPopupComponent.shake();
+        toast('You can\'t CREATE comment OFFLINE');
         this._filmPopupComponent.blockForm();
         return;
       }
@@ -248,8 +247,13 @@ class Film {
 
   _handleDeleteCommentClick(data) {
     if (!isOnline()) {
-      toast('You can\'t delete comment OFFLINE');
-      this._filmPopupComponent.shake();
+      const SHOW_TIME = 3000;
+      toast('You can\'t DELETE comment OFFLINE');
+      setTimeout(() => {
+        this._filmPopupComponent.updateData({
+          isDeleting: false,
+        }, false);
+      }, SHOW_TIME);
       return;
     }
 
