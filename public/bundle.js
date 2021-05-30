@@ -40157,7 +40157,7 @@ apiWithProvider.getMovies()
   });
 
 window.addEventListener('load', () => {
-  navigator.serviceWorker.register('/sw.js');
+  navigator.serviceWorker.register('/1569955-cinemaddict-14/public/sw.js');
 });
 
 window.addEventListener('online', () => {
