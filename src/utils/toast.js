@@ -16,9 +16,8 @@ const toast = (message, online = false) => {
   }
 
   toastContainer.append(toastItem);
-
   setTimeout(() => {
-    toastItem.remove();
+    toastContainer.remove();
   }, SHOW_TIME);
 };
 
