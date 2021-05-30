@@ -170,7 +170,7 @@ class Film {
       this._removePopup();
     }
 
-    if ((evt.ctrlKey || evt.metaKey) && evt.key === 'Enter') {
+    if (evt.key === 'Enter') {
       evt.preventDefault();
 
       if (!isOnline()) {
