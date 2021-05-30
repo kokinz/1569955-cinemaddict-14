@@ -10,10 +10,10 @@ self.addEventListener('install', (evt) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         return cache.addAll([
-          '/',
-          '/index.html',
-          '/bundle.js',
-          '/css/normalize.css',
+          '/1569955-cinemaddict-14/public/',
+          '/1569955-cinemaddict-14/public/index.html',
+          '/1569955-cinemaddict-14/public/bundle.js',
+          '/1569955-cinemaddict-14/public/css/normalize.css',
           '/css/main.css',
           '/fonts/OpenSans-Bold.woff2',
           '/fonts/OpenSans-ExtraBold.woff2',
