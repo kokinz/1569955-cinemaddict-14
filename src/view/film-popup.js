@@ -35,7 +35,7 @@ const createFilmPopupTemplate = (film) => {
             <span class="film-details__comment-author">${comment.author ? comment.author : ''}</span>
             <span class="film-details__comment-day">${comment.date ? dayjs(comment.date).fromNow() : ''}</span>
             <button class="film-details__comment-delete"${film.isDeleting ? 'disabled' : ''}
-                ${film.isDisable ? 'disabled' : ''}>${film.isDeleting ? 'deleting...' : 'delete'}</button>
+                ${film.isDisable ? 'disabled' : ''}>${film.deletingCommentId === comment.id ? 'deleting...' : 'delete'}</button>
           </p>
         </div>
       </li>`;
@@ -240,7 +240,8 @@ class FilmPopup extends SmartView {
       const comments = this._data.comments.filter((item) => item.id !== id);
 
       this.updateData({
-        isDeleting: true,
+        isDisable: true,
+        deletingCommentId: id,
       }, false);
 
       const film = Object.assign({}, FilmPopup.parseDataToFIlm(this._data));
@@ -251,10 +252,6 @@ class FilmPopup extends SmartView {
         id,
         film,
       };
-
-      if (!isOnline()) {
-        this.shake();
-      }
 
       this._callback.commentDelete(data);
     }
@@ -336,6 +333,7 @@ class FilmPopup extends SmartView {
         isSaving: false,
         isDeleting: false,
         isDisable: false,
+        deletingCommentId: null,
       },
     );
   }
@@ -348,6 +346,7 @@ class FilmPopup extends SmartView {
     delete data.isSaving;
     delete data.isDeleting;
     delete data.isDisable;
+    delete data.deletingCommentId;
 
     return data;
   }

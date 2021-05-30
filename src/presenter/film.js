@@ -84,13 +84,15 @@ class Film {
   }
 
   resetPopupView() {
-    this._filmPopupComponent.shake(() => {
-      this._filmPopupComponent.updateData({
-        isSaving: false,
-        isDeleting: false,
-      }, false);
-      this._filmPopupComponent.updateElement();
-    });
+    this._filmPopupComponent.updateElement();
+    this._filmPopupComponent.updateData({
+      isSaving: false,
+      isDeleting: false,
+      isDisable: false,
+      deletingCommentId: null,
+    }, false);
+    this._filmPopupComponent.shake();
+
   }
 
   destroy() {
@@ -246,17 +248,6 @@ class Film {
   }
 
   _handleDeleteCommentClick(data) {
-    if (!isOnline()) {
-      const SHOW_TIME = 3000;
-      toast('You can\'t DELETE comment OFFLINE');
-      setTimeout(() => {
-        this._filmPopupComponent.updateData({
-          isDeleting: false,
-        }, false);
-      }, SHOW_TIME);
-      return;
-    }
-
     this._changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
